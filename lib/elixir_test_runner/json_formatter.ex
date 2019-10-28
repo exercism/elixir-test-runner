@@ -42,8 +42,12 @@ defmodule ElixirTestRunner.JSONFormatter do
   end
 
   def handle_cast({:suite_finished, _run_us, _load_us}, config) do
+    json_results = "{\"errors\":#{Jason.encode!(config.results)}}"
+
     if config.json_path do
-      File.write!(config.json_path, "{\"errors\":#{Jason.encode!(config.results)}}")
+      File.write!(config.json_path, json_results)
+    else
+      IO.puts(json_results)
     end
 
     {:noreply, config}
