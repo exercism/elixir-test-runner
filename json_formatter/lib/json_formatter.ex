@@ -231,6 +231,6 @@ defmodule JSONFormatter do
     report_dir = System.get_env("JSON_REPORT_DIR", Mix.Project.app_path())
     prefix = if prepend, do: "#{Mix.Project.config()[:app]}-", else: ""
 
-    Path.join(report_dir, prefix <> report_file) |> IO.inspect(label: "234")
+    Path.join(report_dir, prefix <> report_file)
   end
 end
