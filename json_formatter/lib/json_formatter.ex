@@ -55,7 +55,7 @@ defmodule JSONFormatter do
 
     file_name = get_report_file_path()
 
-    :ok = File.write!(file_name, json_results, [:write])
+    :ok = File.write(file_name, json_results, [:write])
 
     if Application.get_env(:json_formatter, :print_report_file, false) do
       IO.puts(:stderr, "Wrote JSON report to: #{file_name}")
