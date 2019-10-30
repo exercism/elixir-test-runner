@@ -1,11 +1,20 @@
-defmodule ElixirTestRunner.JSONFormatter do
-  @moduledoc false
+defmodule JSONFormatter do
+  @moduledoc """
+  Module containing the ExUnit formatter for outputting test results in in the desired
+  JSON format required by the exercism automated test runner.
+
+  Output configuration inspired by the JUnit Formatter, found at:
+  https://github.com/victorolinasc/junit-formatter
+  """
+
   use GenServer
 
+  # Import `format_test_failure/5` to provide useful feedback to submissions
   import ExUnit.Formatter, only: [format_test_failure: 5]
 
   # Callbacks
 
+  @impl true
   def init(opts) do
     config = %{
       seed: opts[:seed],
@@ -20,13 +29,12 @@ defmodule ElixirTestRunner.JSONFormatter do
       excluded_counter: 0,
       invalid_counter: 0,
 
-      json_path: opts[:json_path] || false,
       results: %{
         status: :pass, # or :fail, or :error
         message: nil,
         tests: [
           # {
-          #   name: "Test tthat the thing works",
+          #   name: "Test that the thing works",
           #   status: :fail, # or :pass, or :error
           #   message: "Expected 42 but got 123123"
           # }
@@ -41,13 +49,16 @@ defmodule ElixirTestRunner.JSONFormatter do
     {:noreply, config}
   end
 
+  @impl true
   def handle_cast({:suite_finished, _run_us, _load_us}, config) do
-    json_results = "{\"errors\":#{Jason.encode!(config.results)}}"
+    {:ok, json_results} = Jason.encode(config.results)
 
-    if config.json_path do
-      File.write!(config.json_path, json_results)
-    else
-      IO.puts(json_results)
+    file_name = get_report_file_path()
+
+    :ok = File.write!(file_name, json_results, [:write])
+
+    if Application.get_env(:json_formatter, :print_report_file, false) do
+      IO.puts(:stderr, "Wrote JSON report to: #{file_name}")
     end
 
     {:noreply, config}
@@ -164,7 +175,7 @@ defmodule ElixirTestRunner.JSONFormatter do
   defp update_result_status(:fail, status), do: status
   defp update_result_status(:error, _status), do: :error
 
-  # Formatter Utility Functions -- from ExUnit.CLIFormatter
+  # Formatter Utility Functions -- from ExUnit.CLIFormatter, but can't import d/t defp in source
 
   defp formatter(:diff_enabled?, _, %{colors: colors}), do: colors[:enabled]
 
@@ -194,7 +205,7 @@ defmodule ElixirTestRunner.JSONFormatter do
 
   defp formatter(_, msg, _config), do: msg
 
-  # Colorize Utility Functions -- from ExUnit.CLIFormatter
+  # Colorize Utility Functions -- from ExUnit.CLIFormatter, but can't import d/t being private in source
 
   defp colorize(escape, string, %{colors: colors}) do
     if colors[:enabled] do
@@ -204,5 +215,22 @@ defmodule ElixirTestRunner.JSONFormatter do
     else
       string
     end
+  end
+
+  @doc """
+  Helper function to get the full path of the generated report file.
+  It can be passed 2 configurations
+  - report_dir: full path of a directory (defaults to `Mix.Project.app_path()`)
+  - report_file: name of the generated file (defaults to "results.json")
+  """
+  @spec get_report_file_path() :: String.t()
+  def get_report_file_path do
+    prepend = Application.get_env(:json_formatter, :prepend_project_name?, false)
+
+    report_file = Application.get_env(:json_formatter, :report_file, "results.json")
+    report_dir = Application.get_env(:json_formatter, :report_dir, Mix.Project.app_path())
+    prefix = if prepend, do: "#{Mix.Project.config()[:app]}-", else: ""
+
+    Path.join(report_dir, prefix <> report_file)
   end
 end
