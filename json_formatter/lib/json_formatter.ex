@@ -225,12 +225,12 @@ defmodule JSONFormatter do
   """
   @spec get_report_file_path() :: String.t()
   def get_report_file_path do
-    prepend = Application.get_env(:json_formatter, :prepend_project_name?, false)
+    prepend = System.get_env("JSON_PREPEND_PROJECT_NAME")
 
-    report_file = Application.get_env(:json_formatter, :report_file, "results.json")
-    report_dir = Application.get_env(:json_formatter, :report_dir, Mix.Project.app_path())
+    report_file = System.get_env("JSON_REPORT_FILE", "results.json")
+    report_dir = System.get_env("JSON_REPORT_DIR", Mix.Project.app_path())
     prefix = if prepend, do: "#{Mix.Project.config()[:app]}-", else: ""
 
-    Path.join(report_dir, prefix <> report_file)
+    Path.join(report_dir, prefix <> report_file) |> IO.inspect(label: "234")
   end
 end
