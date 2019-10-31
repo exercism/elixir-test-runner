@@ -71,21 +71,29 @@ defmodule JSONFormatterTest do
 
       {:ok, json_output} = Jason.decode(output)
       {:ok, test_status_value} = json_get_in(json_output, ~w{tests status})
+      {:ok, test_name_value} = json_get_in(json_output, ~w{tests name})
+      {:ok, test_message_value} = json_get_in(json_output, ~w{tests message})
 
       assert test_status_value == "fail"
+      assert test_name_value == "test it will fail"
+      assert test_message_value |> String.trim() |> String.starts_with?("1) test it will fail (JSONFormatterTest.Test")
     end
 
     test "on pass, test status is 'pass'" do
       defsuite do
-        test "will pass", do: assert(true)
+        test "it will pass", do: assert(true)
       end
 
       output = run_and_capture_output()
 
       {:ok, json_output} = Jason.decode(output)
       {:ok, test_status_value} = json_get_in(json_output, ~w{tests status})
+      {:ok, test_name_value} = json_get_in(json_output, ~w{tests name})
+      {:ok, test_message_value} = json_get_in(json_output, ~w{tests message})
 
       assert test_status_value == "pass"
+      assert test_name_value == "test it will pass"
+      assert test_message_value == nil
     end
   end
 
