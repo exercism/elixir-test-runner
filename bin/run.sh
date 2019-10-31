@@ -2,12 +2,12 @@
 
 # Synopsis:
 # Automatically tests exercism's Elixir track solutions against corresponding test files.
-# Takes two arguments and makes sure all the tests are run
+# Takes three arguments and makes sure all the tests are run
 
 # Arguments:
 # $1: exercise slug
-# $2: path to solution folder (without trailing slash)
-# $3: path to output directory (without trailing slash)
+# $2: path to solution folder
+# $3: path to output directory
 
 # Output:
 # Writes the tests output to the output directory
