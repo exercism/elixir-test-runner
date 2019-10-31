@@ -1,17 +1,21 @@
+.git
+.gitignore
+.github
+
 # The directory Mix will write compiled artifacts to.
-/_build/
+json_formatter/_build/
 
 # If you run "mix test --cover", coverage assets end up here.
-/cover/
+json_formatter/cover/
 
 # The directory Mix downloads your dependencies sources to.
-/deps/
+json_formatter/deps/
 
 # Where third-party dependencies like ExDoc output generated docs.
-/doc/
+json_formatter/doc/
 
 # Ignore .fetch files in case you like to edit your project deps locally.
-/.fetch
+json_formatter/.fetch
 
 # If the VM crashes, it generates a dump, let's ignore it too.
 erl_crash.dump
