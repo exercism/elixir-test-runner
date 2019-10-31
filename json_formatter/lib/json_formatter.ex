@@ -57,7 +57,7 @@ defmodule JSONFormatter do
 
     :ok = File.write(file_name, json_results, [:write])
 
-    if Application.get_env(:json_formatter, :print_report_file, false) do
+    if System.get_env("JSON_PRINT_FILE") do
       IO.puts(:stderr, "Wrote JSON report to: #{file_name}")
     end
 
@@ -219,7 +219,7 @@ defmodule JSONFormatter do
 
   @doc """
   Helper function to get the full path of the generated report file.
-  It can be passed 2 configurations
+  It can be passed 2 configurations via environment variable
   - report_dir: full path of a directory (defaults to `Mix.Project.app_path()`)
   - report_file: name of the generated file (defaults to "results.json")
   """
