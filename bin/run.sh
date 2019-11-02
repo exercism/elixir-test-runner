@@ -22,7 +22,16 @@ output_dir=$(realpath $3)
 
 # Change directory to the solution folder
 cd $solution_dir
-MIX_ENV=test mix compile
+
+# Compile solution
+compile_step=$(MIX_ENV=test mix compile)
+
+# On compilation error, create results.json with compile error, halt script with error
+if [ $? -ne 0 ]; then
+  printf '{"status": "fail", "message": "%q", "tests": []}\n' "${compile_step}" | perl -pe 's/("\$\x27)|(\x27")/"/g' > "${output_dir}/results.json"
+  printf "Compilation contained error, see ${output_dir}/results.json\n"
+  exit 1
+fi
 
 # Move JSONFormatter and Jason beam files to submission
 consolidated_dir=$(find ./_build -type d -name 'consolidated')
