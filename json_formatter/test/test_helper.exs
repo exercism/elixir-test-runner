@@ -1,2 +1,2 @@
-ExUnit.configure(formatters: [JUnitFormatter, ExUnit.CLIFormatter])
+ExUnit.configure(formatters: [JSONFormatter, ExUnit.CLIFormatter])
 ExUnit.start()
