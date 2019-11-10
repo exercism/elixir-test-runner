@@ -1,8 +1,8 @@
 name: Elixir CI
 
-on: 
+on:
   push:
-    paths: 
+    paths:
       - 'json_formatter/**'
 
 jobs:
@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: elixir:1.9.2-slim
+      image: elixir:1.9.4-slim
 
     steps:
     - uses: actions/checkout@v1
