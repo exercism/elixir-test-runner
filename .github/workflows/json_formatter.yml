@@ -3,6 +3,7 @@ name: Elixir CI
 on:
   push:
     paths:
+      - '.github/**'
       - 'json_formatter/**'
 
 jobs:
