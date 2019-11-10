@@ -1,4 +1,4 @@
-FROM elixir:1.9.2-alpine as builder
+FROM elixir:1.9.4-alpine as builder
 
 # Install SSL ca certificates
 RUN apk update && apk add ca-certificates && apk add bash
