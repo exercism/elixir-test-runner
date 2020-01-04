@@ -51,5 +51,4 @@ mix test \
   --no-deps-check \
   --include pending:true \
   --formatter JSONFormatter \
-  --formatter OutputFormatter \
   > "${output_dir}/test_output" 2>&1
