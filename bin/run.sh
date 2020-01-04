@@ -46,9 +46,10 @@ export JSON_PRINT_FILE=1
 export JSON_REPORT_DIR="$output_dir"
 
 mix test \
+  --seed 0 \
   --no-compile \
   --no-deps-check \
   --include pending:true \
   --formatter JSONFormatter \
-  --formatter ExUnit.CLIFormatter \
-  2>&1
+  --formatter OutputFormatter \
+  > "${output_dir}/test_output" 2>&1
