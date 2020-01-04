@@ -4,10 +4,11 @@ defmodule ExercismFormatter.MixProject do
   def project do
     [
       app: :exercism_formatter,
-      version: "0.1.1",
+      version: "0.1.2",
       elixir: "~> 1.9.4",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      escript: escript()
     ]
   end
 
@@ -25,5 +26,9 @@ defmodule ExercismFormatter.MixProject do
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
       {:jason, "~> 1.1"}
     ]
+  end
+
+  defp escript do
+    [main_module: ExercismFormatter.CLI]
   end
 end

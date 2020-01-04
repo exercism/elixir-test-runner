@@ -1,16 +1,9 @@
 defmodule TestTransformer do
-  def transform_test(file, _opts \\ []) do
-    path = Path.dirname(file)
-    name = Path.basename(file, ".exs")
-
-    transformed =
-      file
-      |> File.read!()
-      |> Code.string_to_quoted!()
-      |> transform_test_ast()
-      |> Macro.to_string()
-
-    File.write!(Path.join(path, (name <> "_transformed.exs")), transformed)
+  def transform_test(file_contents) do
+    file_contents
+    |> Code.string_to_quoted!()
+    |> transform_test_ast()
+    |> Macro.to_string()
   end
 
   def transform_test_ast(ast) do
