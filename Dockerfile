@@ -10,7 +10,7 @@ RUN adduser -D -g '' appuser
 WORKDIR /opt/test-runner
 COPY . .
 
-WORKDIR json_formatter
+WORKDIR exercism_formatter
 RUN mix local.rebar --force
 RUN mix local.hex --force
 RUN mix deps.get

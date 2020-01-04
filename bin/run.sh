@@ -36,7 +36,7 @@ fi
 # Move JSONFormatter and Jason beam files to submission
 consolidated_dir=$(find ./_build -type d -name 'consolidated')
 
-find "${base_dir}/json_formatter/_build" -type f -name '*.beam' | while read file; do
+find "${base_dir}/exercism_formatter/_build" -type f -name '*.beam' | while read file; do
   echo "cp ${file} -> ${consolidated_dir}"
   cp -n "$file" "$consolidated_dir"
 done

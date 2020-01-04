@@ -3,19 +3,19 @@
 .github
 
 # The directory Mix will write compiled artifacts to.
-json_formatter/_build/
+exercism_formatter/_build/
 
 # If you run "mix test --cover", coverage assets end up here.
-json_formatter/cover/
+exercism_formatter/cover/
 
 # The directory Mix downloads your dependencies sources to.
-json_formatter/deps/
+exercism_formatter/deps/
 
 # Where third-party dependencies like ExDoc output generated docs.
-json_formatter/doc/
+exercism_formatter/doc/
 
 # Ignore .fetch files in case you like to edit your project deps locally.
-json_formatter/.fetch
+exercism_formatter/.fetch
 
 # If the VM crashes, it generates a dump, let's ignore it too.
 erl_crash.dump
@@ -24,6 +24,6 @@ erl_crash.dump
 *.ez
 
 # Ignore package tarball (built via "mix hex.build").
-json_formatter-*.tar
+exercism_formatter-*.tar
 
 results.json

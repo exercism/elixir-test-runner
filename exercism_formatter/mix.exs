@@ -1,9 +1,9 @@
-defmodule JSONFormatter.MixProject do
+defmodule ExercismFormatter.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :json_formatter,
+      app: :exercism_formatter,
       version: "0.1.1",
       elixir: "~> 1.9.4",
       start_permanent: Mix.env() == :prod,
