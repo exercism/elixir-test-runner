@@ -20,6 +20,16 @@ base_dir=$(pwd)
 solution_dir=$(realpath $2)
 output_dir=$(realpath $3)
 
+#transform the test files
+find "${solution_dir}/test" -type f -name '*.exs' | while read file; do
+  if [[ $(basename "$file") == 'test_helper.exs' ]]; then
+    continue
+  fi
+
+  printf "transforming %q\n" "${file}"
+  ./bin/exercism_formatter --transform "${file}" --replace
+done
+
 # Change directory to the solution folder
 cd $solution_dir
 
@@ -38,7 +48,7 @@ consolidated_dir=$(find ./_build -type d -name 'consolidated')
 
 find "${base_dir}/exercism_formatter/_build" -type f -name '*.beam' | while read file; do
   echo "cp ${file} -> ${consolidated_dir}"
-  cp -n "$file" "$consolidated_dir"
+  cp -f "$file" "$consolidated_dir"
 done
 
 # Run submission test
@@ -51,4 +61,12 @@ mix test \
   --no-deps-check \
   --include pending:true \
   --formatter JSONFormatter \
-  > "${output_dir}/test_output" 2>&1
+  > "${output_dir}/output" 2> "${output_dir}/error_log"
+
+cd $base_dir
+
+# Convert the output log to json
+./bin/exercism_formatter --log-to-json "${output_dir}/output"
+
+# Combine the results and output log json
+./bin/exercism_formatter --combine "${output_dir}/results.json:${output_dir}/output.json"
