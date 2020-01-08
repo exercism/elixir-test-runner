@@ -1,2 +1,5 @@
 results.json
-exercism_formatter
+
+# Ignore the escript binary
+/bin/exercism_formatter
+/exercism_formatter/exercism_formatter
