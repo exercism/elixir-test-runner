@@ -1,6 +1,6 @@
 # ElixirTestRunner
 
-![build status](https://travis-ci.org/exercism/elixir-test-runner.svg?branch=master)
+![](https://github.com/exercism/elixir-test-runner/workflows/Elixir%20CI/badge.svg)
 
 Exercism Automated Test Runner for Elixir Exercises
 
