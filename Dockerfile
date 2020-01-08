@@ -10,12 +10,16 @@ RUN adduser -D -g '' appuser
 WORKDIR /opt/test-runner
 COPY . .
 
-WORKDIR json_formatter
+WORKDIR /opt/test-runner/exercism_formatter
 RUN mix local.rebar --force
 RUN mix local.hex --force
 RUN mix deps.get
 RUN MIX_ENV=test mix compile
 RUN mix test --no-compile
+
+# Build the escript
+RUN mix escript.build
+RUN mv exercism_formatter ../bin
 
 USER appuser
 WORKDIR /opt/test-runner
