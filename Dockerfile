@@ -1,7 +1,12 @@
 FROM elixir:1.9.4-alpine as builder
 
 # Install SSL ca certificates
-RUN apk update && apk add ca-certificates && apk add bash
+RUN apk update && apk add ca-certificates bash
+RUN apk add \
+  --no-cache \
+  --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+  --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+  jo
 
 # Create appuser
 RUN adduser -D -g '' appuser
