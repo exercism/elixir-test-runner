@@ -38,6 +38,7 @@ compile_step=$(MIX_ENV=test mix compile)
 
 # On compilation error, create results.json with compile error, halt script with error
 if [ $? -ne 0 ]; then
+  compile_step=$(printf "${compile_step}" | tr '"' '`')
   printf '{"status": "fail", "message": "%q", "tests": []}\n' "${compile_step}" | sed -e 's/\("\$\x27\)\|\(\x27"\)/"/g' > "${output_dir}/results.json"
   printf "Compilation contained error, see ${output_dir}/results.json\n"
   exit 1
