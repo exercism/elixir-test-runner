@@ -1,7 +1,16 @@
 FROM elixir:1.9.4-alpine as builder
 
-# Install SSL ca certificates
-RUN apk update && apk add ca-certificates && apk add bash
+# Install SSL ca certificates and bash
+RUN apk update && apk add ca-certificates bash
+
+# Install `jo` from the edge repository
+# `jo` is not avalable in the standard branch, so it requires an overlay
+# TODO: When `jo` is available in the main branch, consider removing this overlay
+RUN apk add \
+  --no-cache \
+  --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+  --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+  jo
 
 # Create appuser
 RUN adduser -D -g '' appuser
