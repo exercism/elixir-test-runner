@@ -18,36 +18,11 @@ These are outlined in the interface that the test-runner satisfies, but briefly 
 
 ## Dockerfile
 
-## Elixir module
-
-## Elixir application escript
-
-## Shell script entry point
-# How this works
-
-## Goals
-
-These are outlined in the interface that the test-runner satisfies, but briefly summarized:
-
-- Provide automated testing feedback on every submitted exercise to exercism by a student.
-- Provide detailed feedback about passing and failing tests
-- Provide relevant stack traces in the event of test failure
-- If the student uses print debug statements, to be able to return the io output to the student
-
-## Components
-
-- A `Dockerfile` which builds an image and provides an entrypoint to the test runner
-- An elixir module which, when compiled, can be injected as a dependency into a solution submitted as a standard mix-style project
-- A small elixir-based application compiled into an escript which performs a small tranformation of the supplied test file
-- A bash script which coordinates the acitivities of the escript, test-suite run, and result output.
-
-## Dockerfile
-
 Described in bread strokes, the docker image is build on an alpine linux variant with elixir pre-built.
 
 The build script gets the mix-project dependencies, compiles the Formatter and escript, then provides an entry point to the bash script running as a limited user.
 
-## Elixir module - `JSONFormatter`
+## Elixir module - JSONFormatter
 
 > found at `exercism_formatter/lib/json_formatter.ex`
 
@@ -70,7 +45,7 @@ THe escript creates a discrete way for the schell script to start the elixir app
 1. Transform the output log into a JSON suitable for adding to the results
 1. Combining the out and results into a final results file.
 
-### `cli.ex`
+### cli.ex
 
 > `exercism_formatter/lib/exercism_formatter/cli.ex`
 
@@ -86,7 +61,7 @@ Supports three command-line arguments:
 
 At this time they are each run separately as single steps and it does not support a multistep process.
 
-### `test_transformer.ex`
+### test_transformer.ex
 
 > `exercism_formatter/lib/test_transformer.ex`
 
