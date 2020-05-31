@@ -39,7 +39,7 @@ Other options supported by the formatter via System ENV
 
 ## Elixir application escript
 
-THe escript creates a discrete way for the schell script to start the elixir application and perform 3 operations neccessary for this test-runner service to work:
+The escript creates a discrete way for the schell script to start the elixir application and perform 3 operations neccessary for this test-runner service to work:
 
 1. Transform a test suite to make suitable for output capture
 1. Transform the output log into a JSON suitable for adding to the results
