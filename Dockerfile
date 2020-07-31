@@ -29,6 +29,5 @@ RUN mix test --no-compile
 RUN mix escript.build
 RUN mv exercism_formatter ../bin
 
-USER appuser
 WORKDIR /opt/test-runner
 ENTRYPOINT ["/opt/test-runner/bin/run.sh"]
