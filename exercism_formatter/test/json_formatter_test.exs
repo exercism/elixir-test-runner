@@ -99,15 +99,7 @@ defmodule JSONFormatterTest do
 
   defp run_and_capture_output(opts \\ []) do
     ExUnit.configure(Keyword.merge(opts, formatters: [JSONFormatter]))
-
-    funs = ExUnit.Server.__info__(:functions)
-
-    if Keyword.has_key?(funs, :modules_loaded) do
-      ExUnit.Server.modules_loaded()
-    else
-      ExUnit.Server.cases_loaded()
-    end
-
+    ExUnit.Server.modules_loaded()
     ExUnit.run()
     File.read!(JSONFormatter.get_report_file_path()) <> "\n"
   end

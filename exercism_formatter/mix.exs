@@ -5,7 +5,7 @@ defmodule ExercismFormatter.MixProject do
     [
       app: :exercism_formatter,
       version: "0.1.2",
-      elixir: "~> 1.9.4",
+      elixir: "~> 1.10.4",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       escript: escript()
