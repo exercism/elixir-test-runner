@@ -19,7 +19,7 @@ RUN apk add \
 
 # Get exercism's tooling_webserver
 RUN curl -L -o /usr/local/bin/tooling_webserver \
-  https://github.com/exercism/tooling-webserver/releases/download/latest/tooling_webserver && \
+  https://github.com/exercism/tooling-webserver/releases/download/0.10.0/tooling_webserver && \
   chmod +x /usr/local/bin/tooling_webserver
 
 # Get the source code
