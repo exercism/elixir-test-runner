@@ -2,22 +2,24 @@ defmodule ExercismFormatter.CLI do
   @moduledoc false
 
   @usage """
-    Usage:
-    > exercism_formatter [--transform <filename> [--replace]]
-    > exercism_formatter [--log-to-json <log filename>]
-    > exercism_formatter [--combine <result json>:<log json>]
-    """
+  Usage:
+  > exercism_formatter [--transform <filename> [--replace]]
+  > exercism_formatter [--log-to-json <log filename>]
+  > exercism_formatter [--combine <result json>:<log json>]
+  """
 
   @spec main() :: no_return
   @spec main(list(String.t())) :: no_return
   def main(args \\ []) do
     {argv, _, _} =
-      OptionParser.parse(args, strict: [
-        transform: :string,
-        replace: :boolean,
-        log_to_json: :string,
-        combine: :string
-      ])
+      OptionParser.parse(args,
+        strict: [
+          transform: :string,
+          replace: :boolean,
+          log_to_json: :string,
+          combine: :string
+        ]
+      )
 
     cond do
       argv[:transform] ->
@@ -27,7 +29,7 @@ defmodule ExercismFormatter.CLI do
         log_to_json(argv[:log_to_json])
 
       argv[:combine] ->
-        [result, log] = argv[:combine] |> IO.inspect(label: "30") |> String.split(":") |> IO.inspect(label: "30")
+        [result, log] = argv[:combine] |> String.split(":")
 
         combine(result, log)
 
@@ -43,7 +45,7 @@ defmodule ExercismFormatter.CLI do
       else
         path = Path.dirname(file)
         name = Path.basename(file, ".exs")
-        Path.join(path, (name <> "_transformed.exs"))
+        Path.join(path, name <> "_transformed.exs")
       end
 
     transformed =
@@ -93,6 +95,7 @@ defmodule ExercismFormatter.CLI do
     cond do
       log[name] ->
         output = log[name]
+
         output =
           cond do
             String.length(output) > 500 -> String.slice(output, -3..-1) <> "..."
@@ -101,7 +104,8 @@ defmodule ExercismFormatter.CLI do
 
         Map.put(test, "output", output)
 
-      true -> test
+      true ->
+        test
     end
   end
 end

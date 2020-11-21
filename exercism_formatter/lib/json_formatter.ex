@@ -28,9 +28,9 @@ defmodule JSONFormatter do
       skipped_counter: 0,
       excluded_counter: 0,
       invalid_counter: 0,
-
       results: %{
-        status: :pass, # or :fail, or :error
+        # or :fail, or :error
+        status: :pass,
         message: nil,
         tests: [
           # {
@@ -55,7 +55,7 @@ defmodule JSONFormatter do
 
     file_name = get_report_file_path()
 
-    :ok = File.write(file_name, json_results, [:write])
+    :ok = File.write(file_name, json_results)
 
     if System.get_env("JSON_PRINT_FILE") do
       IO.puts(:stderr, "Wrote JSON report to: #{file_name}")
@@ -87,7 +87,12 @@ defmodule JSONFormatter do
     status = update_result_status(config.results.status, :fail)
     results = %{config.results | status: status, tests: [test | config.results.tests]}
 
-    config = %{config | test_counter: test_counter, excluded_counter: config.excluded_counter + 1, results: results}
+    config = %{
+      config
+      | test_counter: test_counter,
+        excluded_counter: config.excluded_counter + 1,
+        results: results
+    }
 
     {:noreply, config}
   end
@@ -99,7 +104,12 @@ defmodule JSONFormatter do
     status = update_result_status(config.results.status, :fail)
     results = %{config.results | status: status, tests: [test | config.results.tests]}
 
-    config = %{config | test_counter: test_counter, skipped_counter: config.skipped_counter + 1, results: results}
+    config = %{
+      config
+      | test_counter: test_counter,
+        skipped_counter: config.skipped_counter + 1,
+        results: results
+    }
 
     {:noreply, config}
   end
@@ -111,7 +121,12 @@ defmodule JSONFormatter do
     status = update_result_status(config.results.status, :error)
     results = %{config.results | status: status, tests: [test | config.results.tests]}
 
-    config = %{config | test_counter: test_counter, invalid_counter: config.invalid_counter + 1, results: results}
+    config = %{
+      config
+      | test_counter: test_counter,
+        invalid_counter: config.invalid_counter + 1,
+        results: results
+    }
 
     {:noreply, config}
   end
