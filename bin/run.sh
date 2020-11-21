@@ -40,7 +40,7 @@ compile_step=$(MIX_ENV=test mix compile)
 if [ $? -ne 0 ]; then
   jo status=fail message="${compile_step}" tests="[]" > "${output_dir}/results.json"
   printf "Compilation contained error, see ${output_dir}/results.json\n"
-  exit 1
+  exit 0
 fi
 
 # Move JSONFormatter and Jason beam files to submission
