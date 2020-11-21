@@ -1,21 +1,11 @@
-FROM elixir:1.10-alpine
+FROM elixir:1.10.4-slim
 
 # Install SSL ca certificates
-RUN apk update && \
-  apk add ca-certificates && \
-  apk add curl && \
-  apk add bash
+RUN apt-get update && \
+  apt-get install curl bash jo -y
 
 # Create appuser
-RUN adduser -D -g '' appuser
-
-# Install `jo` from the edge repository
-# `jo` is not avalable in the standard branch, so it requires an overlay
-# TODO: When `jo` is available in the main branch, consider removing this overlay
-RUN apk add \
-  --no-cache \
-  --repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
-  jo
+RUN useradd -ms /bin/bash appuser
 
 # Get exercism's tooling_webserver
 RUN curl -L -o /usr/local/bin/tooling_webserver \
