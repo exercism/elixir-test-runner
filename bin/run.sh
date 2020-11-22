@@ -20,11 +20,15 @@ base_dir=$(pwd)
 solution_dir=$(realpath $2)
 output_dir=$(realpath $3)
 
-#transform the test files
+# Find the exercise test files
 find "${solution_dir}/test" -type f -name '*.exs' | while read file; do
+  # Skip the test_helper
   if [[ $(basename "$file") == 'test_helper.exs' ]]; then
     continue
   fi
+
+  printf "parsing %q for metadata\n" "${file}"
+  cat "${file}" | awk -f ./scripts/get_meta.awk > "${output_dir}/metadata.csv"
 
   printf "transforming %q\n" "${file}"
   ./bin/exercism_test_helper --transform "${file}" --replace
@@ -68,5 +72,8 @@ cd $base_dir
 # Convert the output log to json
 ./bin/exercism_test_helper --log-to-json "${output_dir}/output"
 
+# Convert the metadata CSV to json
+./bin/exercism_test_helper --parse-meta-csv "${output_dir}/metadata.csv:${output_dir}/metadata.json"
+
 # Combine the results and output log json
-./bin/exercism_test_helper --combine "${output_dir}/results.json:${output_dir}/output.json"
+./bin/exercism_test_helper --combine "${output_dir}/results.json:${output_dir}/metadata.json:${output_dir}/output.json"
