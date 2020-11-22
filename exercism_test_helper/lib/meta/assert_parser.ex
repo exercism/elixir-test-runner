@@ -1,4 +1,4 @@
-defmodule AssertParser do
+defmodule Meta.AssertParser do
   def parse(assert_string) do
     {:ok, comparator, command, expected} =
       assert_string

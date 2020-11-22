@@ -1,6 +1,8 @@
 defmodule AssertParserTest do
   use ExUnit.Case, async: false
 
+  alias Meta.AssertParser
+
   describe "separate_assert" do
     for op <- [:==, :===, :>=, :<=, :<, :>] do
       @op op

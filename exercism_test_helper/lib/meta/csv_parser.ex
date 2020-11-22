@@ -1,5 +1,7 @@
-defmodule MetaCSVParser do
+defmodule Meta.CSVParser do
   @csv_parser_module TestCSVParser
+
+  alias Meta.AssertParser
 
   defp define_parser() do
     unless Code.ensure_loaded?(@csv_parser_module) do
