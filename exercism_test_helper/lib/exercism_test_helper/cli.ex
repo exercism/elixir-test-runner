@@ -12,8 +12,8 @@ defmodule ExercismTestHelper.CLI do
   Usage:
   > exercism_test_helper [--parse-meta-csv <meta csv filename>:<output json filename>]
   > exercism_test_helper [--transform <test filename> [--replace]]
-  > exercism_test_helper [--log-to-json <log filename>]
-  > exercism_test_helper [--combine <result json>:<log json>]
+  > exercism_test_helper [--log-to-json <output filename>]
+  > exercism_test_helper [--combine <result json>:<metadata json>:<output json>]
   """
 
   @spec main() :: no_return
@@ -38,8 +38,8 @@ defmodule ExercismTestHelper.CLI do
         OutputLogToJSON.run(argv[:log_to_json])
 
       argv[:combine] ->
-        [result, log] = argv[:combine] |> String.split(":")
-        CombineJSON.run(result, log)
+        [result, metadata, log] = argv[:combine] |> String.split(":")
+        CombineJSON.run(result, metadata, log)
 
       argv[:parse_meta_csv] ->
         argv[:parse_meta_csv] |> String.split(":") |> ParseMeta.run()
