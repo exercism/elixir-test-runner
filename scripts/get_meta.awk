@@ -38,7 +38,7 @@ BEGIN {
 }
 
 # Handle an assert expression
-($0 ~ "assert" && in_test) {
+(($0 ~ "assert" || $0 ~ "refute") && in_test) {
   in_assert=1;
   assert_count+=1;
   meta[test_count]["assert_count"]=assert_count+1;
