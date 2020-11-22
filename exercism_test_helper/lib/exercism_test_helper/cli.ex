@@ -1,11 +1,17 @@
 defmodule ExercismTestHelper.CLI do
   @moduledoc false
 
-  alias ExercismTestHelper.CLI.Command.{TestTransform, OutputLogToJSON, CombineJSON}
+  alias ExercismTestHelper.CLI.Command.{
+    TestTransform,
+    OutputLogToJSON,
+    CombineJSON,
+    ParseMeta
+  }
 
   @usage """
   Usage:
-  > exercism_test_helper [--transform <filename> [--replace]]
+  > exercism_test_helper [--parse-meta-csv <meta csv filename>:<output json filename>]
+  > exercism_test_helper [--transform <test filename> [--replace]]
   > exercism_test_helper [--log-to-json <log filename>]
   > exercism_test_helper [--combine <result json>:<log json>]
   """
@@ -19,7 +25,8 @@ defmodule ExercismTestHelper.CLI do
           transform: :string,
           replace: :boolean,
           log_to_json: :string,
-          combine: :string
+          combine: :string,
+          parse_meta_csv: :string
         ]
       )
 
@@ -33,6 +40,9 @@ defmodule ExercismTestHelper.CLI do
       argv[:combine] ->
         [result, log] = argv[:combine] |> String.split(":")
         CombineJSON.run(result, log)
+
+      argv[:parse_meta_csv] ->
+        argv[:parse_meta_csv] |> String.split(":") |> ParseMeta.run()
 
       true ->
         IO.puts(@usage)
