@@ -1,11 +1,11 @@
-defmodule ExercismFormatter.CLI do
+defmodule ExercismTestHelper.CLI do
   @moduledoc false
 
   @usage """
   Usage:
-  > exercism_formatter [--transform <filename> [--replace]]
-  > exercism_formatter [--log-to-json <log filename>]
-  > exercism_formatter [--combine <result json>:<log json>]
+  > exercism_test_helper [--transform <filename> [--replace]]
+  > exercism_test_helper [--log-to-json <log filename>]
+  > exercism_test_helper [--combine <result json>:<log json>]
   """
 
   @spec main() :: no_return

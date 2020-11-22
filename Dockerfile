@@ -17,7 +17,7 @@ WORKDIR /opt/test-runner
 COPY . .
 
 # Compile the formatter
-WORKDIR /opt/test-runner/exercism_formatter
+WORKDIR /opt/test-runner/exercism_test_helper
 RUN mix local.rebar --force
 RUN mix local.hex --force
 RUN mix deps.get
@@ -26,7 +26,7 @@ RUN mix test --no-compile
 
 # Build the escript
 RUN mix escript.build
-RUN mv exercism_formatter /opt/test-runner/bin
+RUN mv exercism_test_helper /opt/test-runner/bin
 
 USER appuser
 
