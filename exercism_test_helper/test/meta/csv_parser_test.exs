@@ -6,7 +6,7 @@ defmodule Meta.CSVParserTest do
   describe "line_to_entry" do
     test "simple" do
       line = ["testing", "", "1", "assert 1 + 1 == 2"]
-      expected = {"testing", %{cmd: "1 + 1", expected: "to equal \"2\""}}
+      expected = {"testing", %{cmd: "1 + 1", expected: "to equal 2"}}
       assert CSVParser.line_to_entry(line) == expected
     end
   end
@@ -16,7 +16,7 @@ defmodule Meta.CSVParserTest do
       {:ok, stream} = "\"simple test\",\"\",1,\"assert 1 == 1\"\n" |> StringIO.open()
 
       assert CSVParser.parse_stream(stream) ==
-               %{"simple test" => %{cmd: "1", expected: ~S'to equal "1"'}}
+               %{"simple test" => %{cmd: "1", expected: "to equal 1"}}
     end
   end
 
@@ -25,7 +25,7 @@ defmodule Meta.CSVParserTest do
       meta_string = "\"simple test\",\"\",1,\"assert 1 == 1\"\n"
 
       assert CSVParser.parse_string(meta_string) ==
-               %{"simple test" => %{cmd: "1", expected: ~S'to equal "1"'}}
+               %{"simple test" => %{cmd: "1", expected: "to equal 1"}}
     end
   end
 end

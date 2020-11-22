@@ -16,38 +16,38 @@ defmodule AssertParserTest do
 
   describe "expected_to_phrase" do
     test "==" do
-      assert AssertParser.expected_to_phrase(:==, 1) == "to equal \"1\""
+      assert AssertParser.expected_to_phrase(:==, 1) == "to equal 1"
     end
 
     test "===" do
-      assert AssertParser.expected_to_phrase(:===, 1) == "to strict equal \"1\""
+      assert AssertParser.expected_to_phrase(:===, 1) == "to strict equal 1"
     end
 
     test ">=" do
-      assert AssertParser.expected_to_phrase(:>=, 1) == "to be greater than or equal to \"1\""
+      assert AssertParser.expected_to_phrase(:>=, 1) == "to be greater than or equal to 1"
     end
 
     test "<=" do
-      assert AssertParser.expected_to_phrase(:<=, 1) == "to be less than or equal to \"1\""
+      assert AssertParser.expected_to_phrase(:<=, 1) == "to be less than or equal to 1"
     end
 
     test "<" do
-      assert AssertParser.expected_to_phrase(:<, 1) == "to be less than \"1\""
+      assert AssertParser.expected_to_phrase(:<, 1) == "to be less than 1"
     end
 
     test ">" do
-      assert AssertParser.expected_to_phrase(:>, 1) == "to be greater than \"1\""
+      assert AssertParser.expected_to_phrase(:>, 1) == "to be greater than 1"
     end
   end
 
   describe "parse" do
     test "simple" do
-      assert AssertParser.parse("assert 1 == 1") == {:ok, "1", "to equal \"1\""}
+      assert AssertParser.parse("assert 1 == 1") == {:ok, "1", "to equal 1"}
     end
 
     test "expression" do
       assert AssertParser.parse("assert 1 + 1 <= 2") ==
-               {:ok, "1 + 1", "to be less than or equal to \"2\""}
+               {:ok, "1 + 1", "to be less than or equal to 2"}
     end
 
     test "string" do

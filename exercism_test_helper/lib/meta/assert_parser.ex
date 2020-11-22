@@ -5,8 +5,8 @@ defmodule Meta.AssertParser do
       |> Code.string_to_quoted!()
       |> separate_assert()
 
-    expected_str = Macro.to_string(expected)
     command_str = Macro.to_string(command)
+    expected_str = expected |> Macro.to_string() |> format_expected()
 
     {:ok, command_str, expected_to_phrase(comparator, expected_str)}
   end
@@ -26,27 +26,34 @@ defmodule Meta.AssertParser do
   """
   def expected_to_phrase(comparator, expected_str)
 
-  def expected_to_phrase(:===, expected_str) do
-    "to strict equal \"#{expected_str}\""
+  def expected_to_phrase(:===, expected) do
+    "to strict equal #{expected}"
   end
 
-  def expected_to_phrase(:==, expected_str) do
-    "to equal \"#{expected_str}\""
+  def expected_to_phrase(:==, expected) do
+    "to equal #{expected}"
   end
 
-  def expected_to_phrase(:>=, expected_str) do
-    "to be greater than or equal to \"#{expected_str}\""
+  def expected_to_phrase(:>=, expected) do
+    "to be greater than or equal to #{expected}"
   end
 
-  def expected_to_phrase(:<=, expected_str) do
-    "to be less than or equal to \"#{expected_str}\""
+  def expected_to_phrase(:<=, expected) do
+    "to be less than or equal to #{expected}"
   end
 
-  def expected_to_phrase(:<, expected_str) do
-    "to be less than \"#{expected_str}\""
+  def expected_to_phrase(:<, expected) do
+    "to be less than #{expected}"
   end
 
-  def expected_to_phrase(:>, expected_str) do
-    "to be greater than \"#{expected_str}\""
+  def expected_to_phrase(:>, expected) do
+    "to be greater than #{expected}"
+  end
+
+  defp format_expected(str) when is_binary(str) do
+    str
+    # Commented out for now.
+    # |> String.replace_leading(~S'"', "")
+    # |> String.replace_trailing(~S'"', "")
   end
 end
