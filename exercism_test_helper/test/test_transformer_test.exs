@@ -30,9 +30,9 @@ defmodule TestTransformerTest do
       end
 
       desired = """
-        [test started] test hello world
-        Hello, World!
-        """
+      [test started] test hello world
+      Hello, World!
+      """
 
       output = capture_io(fn -> run() end)
 
@@ -57,11 +57,11 @@ defmodule TestTransformerTest do
       end
 
       desired = """
-        [test started] test hello world
-        Hello, World!
-        [test started] test spanish weather
-        The rain in Spain stays mainly on the plain.
-        """
+      [test started] test hello world
+      Hello, World!
+      [test started] test spanish weather
+      The rain in Spain stays mainly on the plain.
+      """
 
       output = capture_io(fn -> run() end)
 
@@ -76,8 +76,6 @@ defmodule TestTransformerTest do
 
     if Keyword.has_key?(funs, :modules_loaded) do
       ExUnit.Server.modules_loaded()
-    else
-      ExUnit.Server.cases_loaded()
     end
 
     ExUnit.run()

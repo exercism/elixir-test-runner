@@ -1,9 +1,9 @@
 defmodule MetaCSVParser do
-  defp define_parser() do
-    parser_module = TestCSVParser
+  @csv_parser_module TestCSVParser
 
-    unless Code.ensure_loaded?(parser_module) do
-      NimbleCSV.define(parser_module, separator: ",", escape: ~S'"')
+  defp define_parser() do
+    unless Code.ensure_loaded?(@csv_parser_module) do
+      NimbleCSV.define(@csv_parser_module, separator: ",", escape: ~S'"')
     end
   end
 
@@ -14,10 +14,9 @@ defmodule MetaCSVParser do
 
   def parse_stream(stream_source \\ :stdio) do
     define_parser()
+    stream = IO.stream(stream_source, :line)
 
-    stream_source
-    |> IO.stream(:line)
-    |> TestCSVParser.parse_stream(skip_headers: false)
+    Kernel.apply(@csv_parser_module, :parse_stream, [stream, [skip_headers: false]])
     |> Stream.map(&line_to_entry/1)
     |> Enum.to_list()
   end
