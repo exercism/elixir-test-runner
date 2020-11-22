@@ -102,7 +102,7 @@ BEGIN {
   FS="\"";
   $0=$0;
   current_test=$2;
-  meta[test_count]["name"]=describe_label current_test;
+  meta[test_count]["name"]="test " describe_label current_test;
   meta[test_count]["code"]="";
   meta[test_count]["assert_count"]=assert_count;
   FS=" ";
