@@ -49,5 +49,10 @@ defmodule AssertParserTest do
       assert AssertParser.parse("assert 1 + 1 <= 2") ==
                {:ok, "1 + 1", "to be less than or equal to \"2\""}
     end
+
+    test "string" do
+      assert AssertParser.parse(~S'assert Function.call() == "Hello"') ==
+               {:ok, "Function.call()", ~S'to equal "Hello"'}
+    end
   end
 end

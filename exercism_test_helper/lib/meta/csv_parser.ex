@@ -20,7 +20,7 @@ defmodule Meta.CSVParser do
 
     Kernel.apply(@csv_parser_module, :parse_stream, [stream, [skip_headers: false]])
     |> Stream.map(&line_to_entry/1)
-    |> Enum.to_list()
+    |> Enum.into(%{})
   end
 
   @doc """
@@ -30,7 +30,10 @@ defmodule Meta.CSVParser do
 
     case assertion_block_count do
       count when count != "1" ->
-        {:error, "unable to use meta from test cases which have more than one assertion"}
+        {
+          test_name,
+          %{error: "unable to use meta from test cases which have more than one assertion"}
+        }
 
       _ ->
         {:ok, command, expected} = assertion_code_blocks |> hd |> AssertParser.parse()
@@ -41,12 +44,13 @@ defmodule Meta.CSVParser do
             code when is_binary(code) -> code <> "\n" <> command
           end
 
-        {:ok,
-         %{
-           name: test_name,
-           cmd: command,
-           expected: expected
-         }}
+        {
+          test_name,
+          %{
+            cmd: command,
+            expected: expected
+          }
+        }
     end
   end
 end
