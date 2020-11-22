@@ -8,7 +8,7 @@ function left_strip (string) {
 
 # Escape all double quotes in a string
 function escape_double_quote (string) {
-  gsub(/"/, "\\\"", string);
+  gsub(/"/, "\"\"", string);
   return string;
 }
 
