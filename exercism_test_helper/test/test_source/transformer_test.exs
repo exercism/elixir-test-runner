@@ -1,4 +1,4 @@
-defmodule TestTransformerTest do
+defmodule TestSource.TransformerTest do
   use ExUnit.Case, async: false
 
   # Testing framework inspired by the JUnit Formatter,
@@ -12,7 +12,7 @@ defmodule TestTransformerTest do
         defmodule unquote(Module.concat(__MODULE__, :"Test#{System.unique_integer([:positive])}")) do
           use ExUnit.Case
 
-          unquote(block |> TestTransformer.transform_test_ast())
+          unquote(block |> TestSource.Transformer.transform_test_ast())
         end
 
       name

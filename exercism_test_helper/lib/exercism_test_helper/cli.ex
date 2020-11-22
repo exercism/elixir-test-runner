@@ -51,7 +51,7 @@ defmodule ExercismTestHelper.CLI do
     transformed =
       file
       |> File.read!()
-      |> TestTransformer.transform_test()
+      |> TestSource.Transformer.transform_test()
 
     File.write!(output_file, transformed)
   end
