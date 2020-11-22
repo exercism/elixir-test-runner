@@ -21,12 +21,24 @@ BEGIN {
   # Initialize flags
   in_describe=0;
   in_test=0;
+
+  # Initialize labels
+  describe_label=""
 }
 
 # Skip blank lines
 ($0 ~ /^\s*$/) { next; }
 
-# Handle the end of a do..end block
+# Handle the end of a describe do..end block
+($0 ~ "end" && in_describe) {
+  describe_block_count-=1;
+  if (describe_block_count == 0) {
+    in_describe=0;
+    describe_label=""
+  }
+}
+
+# Handle the end of a test do..end block
 ($0 ~ "end" && in_test) {
   test_block_count-=1;
   if (test_block_count == 0) {
@@ -69,6 +81,16 @@ BEGIN {
   }
 }
 
+# Handle opening describe function block
+
+($0 ~ "describe") {
+  in_describe=1
+  FS="\"";
+  $0=$0;
+  describe_label=$2 " ";
+  FS=" ";
+}
+
 # Handle opening test function block
 #
 # When parsing the test function name, the field separator (FS) is changes to a
@@ -80,7 +102,7 @@ BEGIN {
   FS="\"";
   $0=$0;
   current_test=$2;
-  meta[test_count]["name"]=current_test;
+  meta[test_count]["name"]=describe_label current_test;
   meta[test_count]["code"]="";
   meta[test_count]["assert_count"]=assert_count;
   FS=" ";
