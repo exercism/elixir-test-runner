@@ -13,8 +13,8 @@ These are outlined in the interface that the test-runner satisfies, but briefly 
 
 - A `Dockerfile` which builds an image and provides an entrypoint to the test runner
 - An elixir module which, when compiled, can be injected as a dependency into a solution submitted as a standard mix-style project
-- A small elixir-based application compiled into an escript which performs a small tranformation of the supplied test file
-- A bash script which coordinates the acitivities of the escript, test-suite run, and result output.
+- A small elixir-based application compiled into an escript which performs a small transformation of the supplied test file
+- A bash script which coordinates the activities of the escript, test-suite run, and result output.
 
 ## Dockerfile
 
@@ -30,7 +30,7 @@ This test-runner uses Elixir-Lang's ExUnit testing framework to run all of the t
 
 It leverages the `mix test` formatter option, where an alternate to ExUnit's `CLIFormatter` can be specified. The alternate formatter is compiled, then inserted into the compiled submission's compiled beam files so that at run-time it can be loaded as a dependency.
 
-The formatter is based on the ExUnit's [formatter specification](https://hexdocs.pm/ex_unit/1.7.0/ExUnit.Formatter.html). It is, itself, an instance of a GenServer running under the ExUnit supervisor listening for events to then log. When the suite completes, it then outputs the log to a formatted JSON specified by the System ENV `JSON_REPORT_FILE` (`results.json` by default) to the directory specifed by `JSON_REPORT_DIR` (`Mix.Project.app_path()` by default).
+The formatter is based on the ExUnit's [formatter specification](https://hexdocs.pm/ex_unit/1.7.0/ExUnit.Formatter.html). It is, itself, an instance of a GenServer running under the ExUnit supervisor listening for events to then log. When the suite completes, it then outputs the log to a formatted JSON specified by the System ENV `JSON_REPORT_FILE` (`results.json` by default) to the directory specified by `JSON_REPORT_DIR` (`Mix.Project.app_path()` by default).
 
 Other options supported by the formatter via System ENV
 
@@ -39,11 +39,12 @@ Other options supported by the formatter via System ENV
 
 ## Elixir application escript
 
-The escript creates a discrete way for the schell script to start the elixir application and perform 3 operations neccessary for this test-runner service to work:
+The escript creates a discrete way for the shell script to start the elixir application and perform 4 operations necessary for this test-runner service to work:
 
 1. Transform a test suite to make suitable for output capture
-1. Transform the output log into a JSON suitable for adding to the results
-1. Combining the out and results into a final results file.
+1. Transform the output log into a JSON suitable for combining with the results
+1. Transform the metadata csv into a JSON suitable for combining with the results
+1. Combining the output, metadata, and results JSON files into a final results.json file.
 
 ### cli.ex
 
@@ -54,18 +55,20 @@ The entrypoint into the escript as defined in the `mix.exs` file.
 Supports three command-line arguments:
 
 ```text
-> exercism_test_helper [--transform <filename> [--replace]]
-> exercism_test_helper [--log-to-json <log filename>]
-> exercism_test_helper [--combine <result json>:<log json>]
+  Usage:
+  > exercism_test_helper [--parse-meta-csv <meta csv filename>:<output json filename>]
+  > exercism_test_helper [--transform <test filename> [--replace]]
+  > exercism_test_helper [--log-to-json <output filename>]
+  > exercism_test_helper [--combine <result json>:<metadata json>:<output json>]
 ```
 
 At this time they are each run separately as single steps and it does not support a multistep process.
 
 ### test_transformer.ex
 
-> `exercism_test_helper/lib/test_transformer.ex`
+> `exercism_test_helper/lib/test_source/transformer.ex`
 
-One caveat with the ExUnit testing framework is that supervisor is run in a process separate from the tests separate from the formatters. So it isn't possible to guarantee that a `IO.puts` or `IO.inspect` function call would appear in the correct order since they are all being called asyncronously to an asyncronous io process.
+One caveat with the ExUnit testing framework is that supervisor is run in a process separate from the tests separate from the formatters. So it isn't possible to guarantee that a `IO.puts` or `IO.inspect` function call would appear in the correct order since they are all being called asynchronously to an asynchronous io process.
 
 So this module can take a test suite, read it, compile it to an AST [Abstract Syntax Tree] format, where it inserts a `IO.puts` function call to `:stdio` at the start of every test case to print a header with the test name.
 
@@ -86,9 +89,11 @@ Awesome! Raise an issue, let's discuss!
 
 This serves as the test-runner's entry point once the image is built. It follows this basic sequence:
 
+1. Gather metadata from the test files.
 1. Transform the test files so that output can be captured.
-1. Compile the submission, catch compile error, catch compiler errors, fail early with an appropreiate `results.json` output
+1. Compile the submission, catch compile error, catch compiler errors, fail early with an appropriate `results.json` output
 1. Move the Formatter and Jason dependency files into the submission build dir.
 1. Run the test suite
 1. Convert the output log
+1. Convert the metadata csv
 1. Merge the JSON files
