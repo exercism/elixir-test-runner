@@ -2,6 +2,7 @@ defmodule AssertParserTest do
   use ExUnit.Case, async: false
 
   alias Meta.AssertParser
+  alias Meta.AssertParser.Term
 
   describe "separate_assertion" do
     for op <- [:==, :===, :>=, :<=, :<, :>, :!=, :!==] do
@@ -9,58 +10,75 @@ defmodule AssertParserTest do
 
       test "#{@op} assert" do
         assert_ast = "assert 1 #{@op} 2" |> Code.string_to_quoted!()
-        assert AssertParser.separate_assertion(assert_ast) == {:ok, :assert, @op, 1, 2}
+
+        assert AssertParser.separate_assertion(assert_ast) ==
+                 {:ok, :assert, @op, %Term{type: :non_ast, value: 1},
+                  %Term{type: :non_ast, value: 2}}
       end
 
       test "#{@op} refute" do
         assert_ast = "refute 1 #{@op} 3" |> Code.string_to_quoted!()
-        assert AssertParser.separate_assertion(assert_ast) == {:ok, :refute, @op, 1, 3}
+
+        assert AssertParser.separate_assertion(assert_ast) ==
+                 {:ok, :refute, @op, %Term{type: :non_ast, value: 1},
+                  %Term{type: :non_ast, value: 3}}
       end
     end
 
     test "assert truthy" do
       assert_ast = "assert 1" |> Code.string_to_quoted!()
-      assert AssertParser.separate_assertion(assert_ast) == {:ok, :assert, nil, 1, nil}
+
+      assert AssertParser.separate_assertion(assert_ast) ==
+               {:ok, :assert, nil, %Term{type: :non_ast, value: 1}, nil}
     end
 
     test "refute truthy" do
       assert_ast = "refute 1" |> Code.string_to_quoted!()
-      assert AssertParser.separate_assertion(assert_ast) == {:ok, :refute, nil, 1, nil}
+
+      assert AssertParser.separate_assertion(assert_ast) ==
+               {:ok, :refute, nil, %Term{type: :non_ast, value: 1}, nil}
     end
   end
 
   describe "expected_to_phrase" do
     test "==" do
-      assert AssertParser.expected_to_phrase(:assert, :==, 1) == "to be equal to 1"
+      assert AssertParser.expected_to_phrase(:assert, :==, %Term{type: :non_ast, value: 1}) ==
+               "to be equal to 1"
     end
 
     test "===" do
-      assert AssertParser.expected_to_phrase(:assert, :===, 1) == "to be strictly equal to 1"
+      assert AssertParser.expected_to_phrase(:assert, :===, %Term{type: :non_ast, value: 1}) ==
+               "to be strictly equal to 1"
     end
 
     test ">=" do
-      assert AssertParser.expected_to_phrase(:assert, :>=, 1) ==
+      assert AssertParser.expected_to_phrase(:assert, :>=, %Term{type: :non_ast, value: 1}) ==
                "to be greater than or equal to 1"
     end
 
     test "<=" do
-      assert AssertParser.expected_to_phrase(:assert, :<=, 1) == "to be less than or equal to 1"
+      assert AssertParser.expected_to_phrase(:assert, :<=, %Term{type: :non_ast, value: 1}) ==
+               "to be less than or equal to 1"
     end
 
     test "<" do
-      assert AssertParser.expected_to_phrase(:assert, :<, 1) == "to be less than 1"
+      assert AssertParser.expected_to_phrase(:assert, :<, %Term{type: :non_ast, value: 1}) ==
+               "to be less than 1"
     end
 
     test ">" do
-      assert AssertParser.expected_to_phrase(:assert, :>, 1) == "to be greater than 1"
+      assert AssertParser.expected_to_phrase(:assert, :>, %Term{type: :non_ast, value: 1}) ==
+               "to be greater than 1"
     end
 
     test "!=" do
-      assert AssertParser.expected_to_phrase(:assert, :!=, 1) == "to not be equal to 1"
+      assert AssertParser.expected_to_phrase(:assert, :!=, %Term{type: :non_ast, value: 1}) ==
+               "to not be equal to 1"
     end
 
     test "!==" do
-      assert AssertParser.expected_to_phrase(:assert, :!==, 1) == "to not be strictly equal to 1"
+      assert AssertParser.expected_to_phrase(:assert, :!==, %Term{type: :non_ast, value: 1}) ==
+               "to not be strictly equal to 1"
     end
 
     test "truthy" do

@@ -1,4 +1,6 @@
 defmodule Meta.AssertParser do
+  alias Meta.AssertParser.Term
+
   def parse(assert_string) do
     assert_string
     |> Code.string_to_quoted!()
@@ -10,9 +12,7 @@ defmodule Meta.AssertParser do
       assert_ast
       |> separate_assertion()
 
-    command_str = Macro.to_string(command)
-
-    {:ok, command_str, expected_to_phrase(assertion, comparator, expected)}
+    {:ok, "#{command}", expected_to_phrase(assertion, comparator, expected)}
   end
 
   @doc """
@@ -22,25 +22,37 @@ defmodule Meta.AssertParser do
   """
   @assertions [:assert, :refute]
   @comparators [:==, :===, :>=, :<=, :<, :>, :!=, :!==]
-  def separate_assertion({assertion, _, [{comparator, _, [command, expected]}]})
+  def separate_assertion({assertion, _, [{comparator, _, [ast_command, ast_expected]} | _]})
       when assertion in @assertions and comparator in @comparators do
+    command = Term.determine(ast_command)
+    expected = Term.determine(ast_expected)
     {:ok, assertion, comparator, command, expected}
   end
 
-  def separate_assertion({assertion, _, [command]}) when assertion in @assertions do
+  def separate_assertion({assertion, _, [ast_command]}) when assertion in @assertions do
+    command = Term.determine(ast_command)
     {:ok, assertion, nil, command, nil}
+  end
+
+  def separate_assertion({:assert_received, _, [ast_expected | _]}) do
+    expected = Term.determine(ast_expected)
+    {:ok, :assert_received, :message, nil, expected}
   end
 
   @doc """
   Depending on the assertion and comparator, facilitate plain language translation
   """
+  def expected_to_phrase(assertion, comparator, nil) do
+    to_phrase(assertion, comparator, nil)
+  end
+
   def expected_to_phrase(assertion, comparator, expected) do
-    case expected do
-      str when is_binary(str) ->
-        to_phrase(assertion, comparator, "\"#{str}\"")
+    case expected.type do
+      :binary ->
+        to_phrase(assertion, comparator, "\"#{expected}\"")
 
       _ ->
-        to_phrase(assertion, comparator, expected)
+        to_phrase(assertion, comparator, "#{expected}")
     end
   end
 
@@ -77,7 +89,7 @@ defmodule Meta.AssertParser do
     "to be greater than #{expected}"
   end
 
-  defp to_phrase(:assert, nil, nil) do
+  defp to_phrase(:assert, _, nil) do
     "to be truthy (not false or nil)"
   end
 
@@ -114,7 +126,11 @@ defmodule Meta.AssertParser do
     "to not be greater than #{expected}"
   end
 
-  defp to_phrase(:refute, nil, nil) do
+  defp to_phrase(:refute, _, nil) do
     "to be falsey (false or nil)"
+  end
+
+  defp to_phrase(:assert_received, :message, expected) do
+    "to have received the message #{expected}"
   end
 end
