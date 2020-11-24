@@ -10,7 +10,7 @@ defmodule ExercismTestHelper.CLI do
 
   @usage """
   Usage:
-  > exercism_test_helper [--parse-meta-csv <test filename>:<output json filename>]
+  > exercism_test_helper [--parse-meta <test filename>:<output json filename>]
   > exercism_test_helper [--transform <test filename>:<transformed test filename>]
   > exercism_test_helper [--log-to-json <output filename>:<output json filename>]
   > exercism_test_helper [--combine <result json>:<metadata json>:<output json>]
@@ -25,7 +25,7 @@ defmodule ExercismTestHelper.CLI do
           transform: :string,
           log_to_json: :string,
           combine: :string,
-          parse_meta_csv: :string
+          parse_meta: :string
         ]
       )
 
@@ -45,8 +45,8 @@ defmodule ExercismTestHelper.CLI do
         |> String.split(":")
         |> CombineJSON.run()
 
-      argv[:parse_meta_csv] ->
-        argv[:parse_meta_csv]
+      argv[:parse_meta] ->
+        argv[:parse_meta]
         |> String.split(":")
         |> ParseMeta.run()
 

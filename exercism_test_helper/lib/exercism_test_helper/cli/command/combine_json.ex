@@ -32,9 +32,7 @@ defmodule ExercismTestHelper.CLI.Command.CombineJSON do
             add_metadata_error_fields(test)
 
           true ->
-            test
-            |> Map.put("cmd", entry["cmd"])
-            |> Map.put("expected", entry["expected"])
+            Map.put(test, "expression", entry["expression"])
         end
 
       true ->
@@ -62,11 +60,7 @@ defmodule ExercismTestHelper.CLI.Command.CombineJSON do
 
   defp add_metadata_error_fields(test, reason \\ "metadata unavailable") do
     test
-    |> Map.put("cmd", "unavailable")
-    |> Map.put("expected", "unavailable")
-    |> Map.put(
-      "metadata-error",
-      reason
-    )
+    |> Map.put("expression", nil)
+    |> Map.put("metadata-error", reason)
   end
 end
