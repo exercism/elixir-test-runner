@@ -1,4 +1,4 @@
-defmodule ExercismFormatter.MixProject do
+defmodule ExercismTestHelper.MixProject do
   use Mix.Project
 
   def project do
