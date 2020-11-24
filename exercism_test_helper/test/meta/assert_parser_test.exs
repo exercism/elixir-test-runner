@@ -3,13 +3,18 @@ defmodule AssertParserTest do
 
   alias Meta.AssertParser
 
-  describe "separate_assert" do
-    for op <- [:==, :===, :>=, :<=, :<, :>] do
+  describe "separate_assertion" do
+    for op <- [:==, :===, :>=, :<=, :<, :>, :!=, :!==] do
       @op op
 
-      test "#{@op}" do
+      test "#{@op} assert" do
         assert_ast = "assert 1 #{@op} 2" |> Code.string_to_quoted!()
-        assert AssertParser.separate_assert(assert_ast) == {:ok, :assert, @op, 1, 2}
+        assert AssertParser.separate_assertion(assert_ast) == {:ok, :assert, @op, 1, 2}
+      end
+
+      test "#{@op} refute" do
+        assert_ast = "refute 1 #{@op} 3" |> Code.string_to_quoted!()
+        assert AssertParser.separate_assertion(assert_ast) == {:ok, :refute, @op, 1, 3}
       end
     end
   end
@@ -20,7 +25,7 @@ defmodule AssertParserTest do
     end
 
     test "===" do
-      assert AssertParser.expected_to_phrase(:assert, :===, 1) == "to be strict equal to 1"
+      assert AssertParser.expected_to_phrase(:assert, :===, 1) == "to be strictly equal to 1"
     end
 
     test ">=" do
@@ -38,6 +43,14 @@ defmodule AssertParserTest do
 
     test ">" do
       assert AssertParser.expected_to_phrase(:assert, :>, 1) == "to be greater than 1"
+    end
+
+    test "!=" do
+      assert AssertParser.expected_to_phrase(:assert, :!=, 1) == "to not be equal to 1"
+    end
+
+    test "!==" do
+      assert AssertParser.expected_to_phrase(:assert, :!==, 1) == "to not be strictly equal to 1"
     end
   end
 
