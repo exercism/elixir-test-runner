@@ -1,8 +1,9 @@
 defmodule Meta.TestParser.Test do
-  @derive {Jason.Encoder, only: [:name, :command, :expected]}
-  defstruct [:name, :preamble, :assertions, :command, :expected]
+  @derive {Jason.Encoder, only: [:name, :command, :expected, :expression]}
+  defstruct [:name, :preamble, :assertions, :command, :expected, :expression]
 
   def make(description, name, test_block) do
+    expression = Meta.AssertParser.Term.determine(test_block) |> to_string()
     {preamble, assertions} = parse_test_block(test_block)
     {last_command, expected} = parse_assertion(assertions)
     command = combine_preamble(preamble, last_command)
@@ -12,12 +13,13 @@ defmodule Meta.TestParser.Test do
       preamble: preamble,
       assertions: assertions,
       command: command,
-      expected: expected
+      expected: expected,
+      expression: expression
     }
   end
 
-  defp make_name(nil, name), do: name
-  defp make_name(description, name), do: "#{description} #{name}"
+  defp make_name(nil, name), do: "test #{name}"
+  defp make_name(description, name), do: "test #{description} #{name}"
 
   def parse_test_block(code_block) when not is_list(code_block) do
     parse_test_block([code_block])
@@ -68,6 +70,11 @@ defmodule Meta.TestParser.Test do
 
   @doc false
   def combine_preamble(nil, last_command), do: last_command
+
+  def combine_preamble(preamble, "") do
+    preamble_block = {:__block__, [], preamble}
+    "#{preamble_block |> Meta.Style.format()}"
+  end
 
   def combine_preamble(preamble, last_command) do
     preamble_block = {:__block__, [], preamble}
