@@ -1,14 +1,5 @@
 defmodule ExercismTestHelper.CLI.Command.TestTransform do
-  def run(file, replace) do
-    output_file =
-      if replace do
-        file
-      else
-        path = Path.dirname(file)
-        name = Path.basename(file, ".exs")
-        Path.join(path, name <> "_transformed.exs")
-      end
-
+  def run([file, output_file]) do
     transformed =
       file
       |> File.read!()

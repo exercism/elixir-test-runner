@@ -10,9 +10,9 @@ defmodule ExercismTestHelper.CLI do
 
   @usage """
   Usage:
-  > exercism_test_helper [--parse-meta-csv <meta csv filename>:<output json filename>]
-  > exercism_test_helper [--transform <test filename> [--replace]]
-  > exercism_test_helper [--log-to-json <output filename>]
+  > exercism_test_helper [--parse-meta-csv <test filename>:<output json filename>]
+  > exercism_test_helper [--transform <test filename>:<transformed test filename>]
+  > exercism_test_helper [--log-to-json <output filename>:<output json filename>]
   > exercism_test_helper [--combine <result json>:<metadata json>:<output json>]
   """
 
@@ -23,7 +23,6 @@ defmodule ExercismTestHelper.CLI do
       OptionParser.parse(args,
         strict: [
           transform: :string,
-          replace: :boolean,
           log_to_json: :string,
           combine: :string,
           parse_meta_csv: :string
@@ -32,17 +31,24 @@ defmodule ExercismTestHelper.CLI do
 
     cond do
       argv[:transform] ->
-        TestTransform.run(argv[:transform], argv[:replace])
+        argv[:transform]
+        |> String.split(":")
+        |> TestTransform.run()
 
       argv[:log_to_json] ->
-        OutputLogToJSON.run(argv[:log_to_json])
+        argv[:log_to_json]
+        |> String.split(":")
+        |> OutputLogToJSON.run()
 
       argv[:combine] ->
-        [result, metadata, log] = argv[:combine] |> String.split(":")
-        CombineJSON.run(result, metadata, log)
+        argv[:combine]
+        |> String.split(":")
+        |> CombineJSON.run()
 
       argv[:parse_meta_csv] ->
-        argv[:parse_meta_csv] |> String.split(":") |> ParseMeta.run()
+        argv[:parse_meta_csv]
+        |> String.split(":")
+        |> ParseMeta.run()
 
       true ->
         IO.puts(@usage)

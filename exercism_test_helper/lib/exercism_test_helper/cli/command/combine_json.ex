@@ -1,19 +1,14 @@
 defmodule ExercismTestHelper.CLI.Command.CombineJSON do
-  def run(result_json_file, metadata_json_file, log_json_file) do
-    results =
-      result_json_file
+  def run([result_json_file, metadata_json_file, log_json_file]) do
+    read_decode = fn filename ->
+      filename
       |> File.read!()
       |> Jason.decode!()
+    end
 
-    metadata =
-      metadata_json_file
-      |> File.read!()
-      |> Jason.decode!()
-
-    log =
-      log_json_file
-      |> File.read!()
-      |> Jason.decode!()
+    results = read_decode.(result_json_file)
+    metadata = read_decode.(metadata_json_file)
+    log = read_decode.(log_json_file)
 
     updated =
       results["tests"]

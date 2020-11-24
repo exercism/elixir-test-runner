@@ -1,5 +1,5 @@
 defmodule ExercismTestHelper.CLI.Command.OutputLogToJSON do
-  def run(file) do
+  def run([file, output_file]) do
     json =
       file
       |> File.read!()
@@ -9,6 +9,6 @@ defmodule ExercismTestHelper.CLI.Command.OutputLogToJSON do
       |> Enum.into(%{})
       |> Jason.encode!()
 
-    File.write!(file <> ".json", json)
+    File.write!(output_file, json)
   end
 end

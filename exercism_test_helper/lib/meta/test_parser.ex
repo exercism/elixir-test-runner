@@ -4,9 +4,8 @@ defmodule Meta.TestParser do
     TestSuite
   }
 
-  def parse(filename) do
-    contents = File.read!(filename)
-    ast = Code.string_to_quoted!(contents)
+  def parse(code_string) do
+    ast = Code.string_to_quoted!(code_string)
 
     {_, meta} =
       Macro.traverse(
