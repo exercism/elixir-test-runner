@@ -1,3 +1,8 @@
+error_log
+metadata.csv
+metadata.json
+output
+output.json
 results.json
 
 # Ignore the escript binary
