@@ -28,10 +28,12 @@ find "${solution_dir}/test" -type f -name '*.exs' | while read file; do
   fi
 
   printf "parsing %q for metadata\n" "${file}"
-  cat "${file}" | awk -f ./scripts/get_meta.awk > "${output_dir}/metadata.csv"
+  ./bin/exercism_test_helper --parse-meta "${file}:${output_dir}/metadata.json"
 
   printf "transforming %q\n" "${file}"
-  ./bin/exercism_test_helper --transform "${file}" --replace
+  cp "${file}" "${file}.bkp"
+  ./bin/exercism_test_helper --transform "${file}:${file}.altered"
+  cp "${file}.altered" "${file}"
 done
 
 # Change directory to the solution folder
@@ -70,10 +72,18 @@ mix test \
 cd $base_dir
 
 # Convert the output log to json
-./bin/exercism_test_helper --log-to-json "${output_dir}/output"
-
-# Convert the metadata CSV to json
-./bin/exercism_test_helper --parse-meta-csv "${output_dir}/metadata.csv:${output_dir}/metadata.json"
+./bin/exercism_test_helper --log-to-json "${output_dir}/output:${output_dir}/output.json"
 
 # Combine the results and output log json
 ./bin/exercism_test_helper --combine "${output_dir}/results.json:${output_dir}/metadata.json:${output_dir}/output.json"
+
+# Restore test files
+find "${solution_dir}/test" -type f -name '*.exs' | while read file; do
+  # Skip the test_helper
+  if [[ $(basename "$file") == 'test_helper.exs' ]]; then
+    continue
+  fi
+
+  printf "restoring %q\n" "${file}"
+  cp "${file}.bkp" "${file}"
+done
