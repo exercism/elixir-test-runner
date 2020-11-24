@@ -47,8 +47,14 @@ defmodule ExercismTestHelper.CLI.Command.CombineJSON do
 
         output =
           cond do
-            String.length(output) > 500 -> String.slice(output, -3..-1) <> "..."
-            true -> output
+            String.length(output) > 500 ->
+              output
+              |> String.split_at(500 - 3)
+              |> elem(0)
+              |> Kernel.<>("...")
+
+            true ->
+              output
           end
 
         Map.put(test, "output", output)
