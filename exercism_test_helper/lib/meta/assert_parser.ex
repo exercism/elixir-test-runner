@@ -6,12 +6,13 @@ defmodule Meta.AssertParser do
   end
 
   def parse_ast(assert_ast) do
-    {:ok, assertion, comparator, command, expected} = separate_assertion(assert_ast)
+    {:ok, assertion, comparator, command, expected} =
+      assert_ast
+      |> separate_assertion()
 
     command_str = Macro.to_string(command)
-    expected_str = expected |> Macro.to_string() |> format_expected()
 
-    {:ok, command_str, expected_to_phrase(assertion, comparator, expected_str)}
+    {:ok, command_str, expected_to_phrase(assertion, comparator, expected)}
   end
 
   @doc """
@@ -26,82 +27,94 @@ defmodule Meta.AssertParser do
     {:ok, assertion, comparator, command, expected}
   end
 
+  def separate_assertion({assertion, _, [command]}) when assertion in @assertions do
+    {:ok, assertion, nil, command, nil}
+  end
+
   @doc """
   Depending on the assertion and comparator, facilitate plain language translation
   """
-  def expected_to_phrase(assertion, comparator, expected_str)
+  def expected_to_phrase(assertion, comparator, expected) do
+    case expected do
+      str when is_binary(str) ->
+        to_phrase(assertion, comparator, "\"#{str}\"")
+
+      _ ->
+        to_phrase(assertion, comparator, expected)
+    end
+  end
 
   # phrases for assert
-  def expected_to_phrase(:assert, :===, expected) do
+  defp to_phrase(:assert, :===, expected) do
     "to be strictly equal to #{expected}"
   end
 
-  def expected_to_phrase(:assert, :==, expected) do
+  defp to_phrase(:assert, :==, expected) do
     "to be equal to #{expected}"
   end
 
-  def expected_to_phrase(:assert, :!==, expected) do
+  defp to_phrase(:assert, :!==, expected) do
     "to not be strictly equal to #{expected}"
   end
 
-  def expected_to_phrase(:assert, :!=, expected) do
+  defp to_phrase(:assert, :!=, expected) do
     "to not be equal to #{expected}"
   end
 
-  def expected_to_phrase(:assert, :>=, expected) do
+  defp to_phrase(:assert, :>=, expected) do
     "to be greater than or equal to #{expected}"
   end
 
-  def expected_to_phrase(:assert, :<=, expected) do
+  defp to_phrase(:assert, :<=, expected) do
     "to be less than or equal to #{expected}"
   end
 
-  def expected_to_phrase(:assert, :<, expected) do
+  defp to_phrase(:assert, :<, expected) do
     "to be less than #{expected}"
   end
 
-  def expected_to_phrase(:assert, :>, expected) do
+  defp to_phrase(:assert, :>, expected) do
     "to be greater than #{expected}"
   end
 
+  defp to_phrase(:assert, nil, nil) do
+    "to be truthy (not false or nil)"
+  end
+
   # phrases for refute
-  def expected_to_phrase(:refute, :===, expected) do
+  defp to_phrase(:refute, :===, expected) do
     "to not be strictly equal to #{expected}"
   end
 
-  def expected_to_phrase(:refute, :==, expected) do
+  defp to_phrase(:refute, :==, expected) do
     "to not be equal to #{expected}"
   end
 
-  def expected_to_phrase(:refute, :!==, expected) do
+  defp to_phrase(:refute, :!==, expected) do
     "to be strictly equal to #{expected}"
   end
 
-  def expected_to_phrase(:refute, :!=, expected) do
+  defp to_phrase(:refute, :!=, expected) do
     "to be equal to #{expected}"
   end
 
-  def expected_to_phrase(:refute, :>=, expected) do
+  defp to_phrase(:refute, :>=, expected) do
     "to not be greater than or equal to #{expected}"
   end
 
-  def expected_to_phrase(:refute, :<=, expected) do
+  defp to_phrase(:refute, :<=, expected) do
     "to not be less than or equal to #{expected}"
   end
 
-  def expected_to_phrase(:refute, :<, expected) do
+  defp to_phrase(:refute, :<, expected) do
     "to not be less than #{expected}"
   end
 
-  def expected_to_phrase(:refute, :>, expected) do
+  defp to_phrase(:refute, :>, expected) do
     "to not be greater than #{expected}"
   end
 
-  @doc false
-  defp format_expected(str) do
-    str
-    # Commented out for now.
-    # |> String.replace_leading(~S'"', "")
-    # |> String.replace_trailing(~S'"', "")
+  defp to_phrase(:refute, nil, nil) do
+    "to be falsey (false or nil)"
   end
 end
