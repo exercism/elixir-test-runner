@@ -1,9 +1,12 @@
 defmodule Meta.AssertParser do
   def parse(assert_string) do
-    {:ok, assertion, comparator, command, expected} =
-      assert_string
-      |> Code.string_to_quoted!()
-      |> separate_assert()
+    assert_string
+    |> Code.string_to_quoted!()
+    |> parse_ast()
+  end
+
+  def parse_ast(assert_ast) do
+    {:ok, assertion, comparator, command, expected} = separate_assertion(assert_ast)
 
     command_str = Macro.to_string(command)
     expected_str = expected |> Macro.to_string() |> format_expected()
@@ -12,12 +15,14 @@ defmodule Meta.AssertParser do
   end
 
   @doc """
-  separate_assert
+  separate_assertion
   Takes a function an quoted assert block and returns the command to be evaluated
   to generate the actual value, and the expected value.
   """
-  def separate_assert({assertion, _, [{comparator, _, [command, expected]}]})
-      when assertion in [:assert, :refute] and comparator in [:==, :===, :>=, :<=, :<, :>] do
+  @assertions [:assert, :refute]
+  @comparators [:==, :===, :>=, :<=, :<, :>, :!=, :!==]
+  def separate_assertion({assertion, _, [{comparator, _, [command, expected]}]})
+      when assertion in @assertions and comparator in @comparators do
     {:ok, assertion, comparator, command, expected}
   end
 
@@ -28,11 +33,19 @@ defmodule Meta.AssertParser do
 
   # phrases for assert
   def expected_to_phrase(:assert, :===, expected) do
-    "to be strict equal to #{expected}"
+    "to be strictly equal to #{expected}"
   end
 
   def expected_to_phrase(:assert, :==, expected) do
     "to be equal to #{expected}"
+  end
+
+  def expected_to_phrase(:assert, :!==, expected) do
+    "to not be strictly equal to #{expected}"
+  end
+
+  def expected_to_phrase(:assert, :!=, expected) do
+    "to not be equal to #{expected}"
   end
 
   def expected_to_phrase(:assert, :>=, expected) do
@@ -53,11 +66,19 @@ defmodule Meta.AssertParser do
 
   # phrases for refute
   def expected_to_phrase(:refute, :===, expected) do
-    "to not be strict equal to #{expected}"
+    "to not be strictly equal to #{expected}"
   end
 
   def expected_to_phrase(:refute, :==, expected) do
     "to not be equal to #{expected}"
+  end
+
+  def expected_to_phrase(:refute, :!==, expected) do
+    "to be strictly equal to #{expected}"
+  end
+
+  def expected_to_phrase(:refute, :!=, expected) do
+    "to be equal to #{expected}"
   end
 
   def expected_to_phrase(:refute, :>=, expected) do
