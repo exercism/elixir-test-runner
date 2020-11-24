@@ -28,8 +28,6 @@ defmodule ExercismTestHelper.CLI.Command.CombineJSON do
   end
 
   defp add_metadata(%{"name" => name} = test, metadata) do
-    IO.inspect(binding(), label: "31")
-
     cond do
       metadata[name] ->
         entry = metadata[name]
