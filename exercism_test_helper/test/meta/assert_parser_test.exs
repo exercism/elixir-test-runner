@@ -17,6 +17,16 @@ defmodule AssertParserTest do
         assert AssertParser.separate_assertion(assert_ast) == {:ok, :refute, @op, 1, 3}
       end
     end
+
+    test "assert truthy" do
+      assert_ast = "assert 1" |> Code.string_to_quoted!()
+      assert AssertParser.separate_assertion(assert_ast) == {:ok, :assert, nil, 1, nil}
+    end
+
+    test "refute truthy" do
+      assert_ast = "refute 1" |> Code.string_to_quoted!()
+      assert AssertParser.separate_assertion(assert_ast) == {:ok, :refute, nil, 1, nil}
+    end
   end
 
   describe "expected_to_phrase" do
@@ -51,6 +61,11 @@ defmodule AssertParserTest do
 
     test "!==" do
       assert AssertParser.expected_to_phrase(:assert, :!==, 1) == "to not be strictly equal to 1"
+    end
+
+    test "truthy" do
+      assert AssertParser.expected_to_phrase(:assert, nil, nil) ==
+               "to be truthy (not false or nil)"
     end
   end
 
