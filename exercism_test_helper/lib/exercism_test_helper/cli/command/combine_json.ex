@@ -12,7 +12,7 @@ defmodule ExercismTestHelper.CLI.Command.CombineJSON do
 
     updated =
       results["tests"]
-      |> Enum.map(&add_metadata(&1, metadata))
+      |> Enum.map(&add_metadata(&1, metadata["tests"]))
       |> Enum.map(&add_test_output(&1, log))
 
     updated_results =
@@ -23,16 +23,16 @@ defmodule ExercismTestHelper.CLI.Command.CombineJSON do
   end
 
   defp add_metadata(%{"name" => name} = test, metadata) do
-    cond do
-      metadata[name] ->
-        entry = metadata[name]
+    test_metadata = Enum.find(metadata, nil, fn entry -> entry["name"] == name end)
 
+    cond do
+      test_metadata ->
         cond do
-          entry["error"] ->
+          test_metadata["error"] ->
             add_metadata_error_fields(test)
 
           true ->
-            Map.put(test, "test_body", entry["test_body"])
+            Map.put(test, "test_body", test_metadata["test_body"])
         end
 
       true ->
