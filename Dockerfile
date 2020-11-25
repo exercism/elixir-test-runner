@@ -25,7 +25,7 @@ RUN MIX_ENV=test mix compile
 RUN mix test --no-compile
 
 # Build the escript
-RUN mix escript.build
+RUN MIX_ENV=prod mix escript.build
 RUN mv exercism_test_helper /opt/test-runner/bin
 
 USER appuser
