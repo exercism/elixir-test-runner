@@ -1,19 +1,19 @@
 defmodule Meta.TestParser.Test do
-  @derive {Jason.Encoder, only: [:name, :command, :expected, :test_body]}
+  @derive {Jason.Encoder, only: [:name, :test_body]}
   defstruct [:name, :preamble, :assertions, :command, :expected, :test_body]
 
   def make(description, name, test_block) do
     test_body = Meta.AssertParser.Term.determine(test_block) |> to_string()
-    {preamble, assertions} = parse_test_block(test_block)
-    {last_command, expected} = parse_assertion(assertions)
-    command = combine_preamble(preamble, last_command)
+    # {preamble, assertions} = parse_test_block(test_block)
+    # {last_command, expected} = parse_assertion(assertions)
+    # command = combine_preamble(preamble, last_command)
 
     %__MODULE__{
       name: make_name(description, name),
-      preamble: preamble,
-      assertions: assertions,
-      command: command,
-      expected: expected,
+      # preamble: preamble,
+      # assertions: assertions,
+      # command: command,
+      # expected: expected,
       test_body: test_body
     }
   end
