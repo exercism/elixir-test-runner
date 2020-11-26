@@ -50,11 +50,11 @@ if [ $? -ne 0 ]; then
 fi
 
 # Move JSONFormatter and Jason beam files to submission
-consolidated_dir=$(find ./_build -type d -name 'consolidated')
+consolidated_dir=$(find ./_build/test -type d -name 'consolidated' | head -n 1)
 
-find "${base_dir}/exercism_test_helper/_build" -type f -name '*.beam' | while read file; do
+find "${base_dir}/exercism_test_helper/_build/test" -type f -name '*.beam' | while read file; do
   echo "cp ${file} -> ${consolidated_dir}"
-  cp -f "$file" "$consolidated_dir"
+  cp -f "${file}" "${consolidated_dir}"
 done
 
 # Run submission test
