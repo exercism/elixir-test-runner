@@ -70,7 +70,7 @@ defmodule Meta.Style do
   defp format({:fn, _, [_ | _] = block}, _) do
     """
     fn
-    #{format_arrows(block)}
+    #{format_clauses(block)}
     end\
     """
   end
@@ -79,7 +79,7 @@ defmodule Meta.Style do
   defp format({:case, _, [expr, blocks]}, _) do
     expr = format(expr)
 
-    do_block = format_arrows(blocks[:do])
+    do_block = format_clauses(blocks[:do])
 
     """
     case #{expr} do
@@ -90,7 +90,7 @@ defmodule Meta.Style do
 
   # Custom formatting for cond expression
   defp format({:cond, _, [blocks]}, _) do
-    do_block = format_arrows(blocks[:do])
+    do_block = format_clauses(blocks[:do])
 
     """
     cond do
@@ -102,9 +102,9 @@ defmodule Meta.Style do
   defp format(_ast, string), do: string
 
   #
+  # Helper function to format arrow clauses
   #
-  #
-  defp format_arrows(arrows) do
+  defp format_clauses(arrows) do
     force_multiline =
       arrows
       |> Enum.any?(fn case_expr ->
@@ -112,7 +112,7 @@ defmodule Meta.Style do
       end)
 
     arrows
-    |> Enum.map(&format_arrow(&1, force_multiline))
+    |> Enum.map(&format_clause(&1, force_multiline))
     |> Enum.map(&indent_multiline/1)
     |> (fn code_blocks ->
           if force_multiline do
@@ -126,7 +126,7 @@ defmodule Meta.Style do
   #
   # Helper function to format case expressions prettily
   #
-  defp format_arrow({:->, _, [[left], right]}, force_multiline) do
+  defp format_clause({:->, _, [[left], right]}, force_multiline) do
     left = format(left)
     right = format(right)
 
