@@ -1,4 +1,4 @@
-defmodule TestTransformer do
+defmodule TestSource.Transformer do
   def transform_test(file_contents) do
     file_contents
     |> Code.string_to_quoted!()
@@ -21,6 +21,7 @@ defmodule TestTransformer do
       case block do
         [do: {:__block__, _, b}] ->
           make_test_header_block(b, name)
+
         [do: i] ->
           make_test_header_block(i, name)
       end

@@ -20,14 +20,20 @@ base_dir=$(pwd)
 solution_dir=$(realpath $2)
 output_dir=$(realpath $3)
 
-#transform the test files
+# Find the exercise test files
 find "${solution_dir}/test" -type f -name '*.exs' | while read file; do
+  # Skip the test_helper
   if [[ $(basename "$file") == 'test_helper.exs' ]]; then
     continue
   fi
 
+  printf "parsing %q for metadata\n" "${file}"
+  ./bin/exercism_test_helper --parse-meta "${file}:${output_dir}/metadata.json"
+
   printf "transforming %q\n" "${file}"
-  ./bin/exercism_formatter --transform "${file}" --replace
+  cp "${file}" "${file}.bkp"
+  ./bin/exercism_test_helper --transform "${file}:${file}.altered"
+  cp "${file}.altered" "${file}"
 done
 
 # Change directory to the solution folder
@@ -44,11 +50,11 @@ if [ $? -ne 0 ]; then
 fi
 
 # Move JSONFormatter and Jason beam files to submission
-consolidated_dir=$(find ./_build -type d -name 'consolidated')
+consolidated_dir=$(find ./_build/test -type d -name 'consolidated' | head -n 1)
 
-find "${base_dir}/exercism_formatter/_build" -type f -name '*.beam' | while read file; do
+find "${base_dir}/exercism_test_helper/_build/test" -type f -name '*.beam' | while read file; do
   echo "cp ${file} -> ${consolidated_dir}"
-  cp -f "$file" "$consolidated_dir"
+  cp -f "${file}" "${consolidated_dir}"
 done
 
 # Run submission test
@@ -66,7 +72,18 @@ mix test \
 cd $base_dir
 
 # Convert the output log to json
-./bin/exercism_formatter --log-to-json "${output_dir}/output"
+./bin/exercism_test_helper --log-to-json "${output_dir}/output:${output_dir}/output.json"
 
 # Combine the results and output log json
-./bin/exercism_formatter --combine "${output_dir}/results.json:${output_dir}/output.json"
+./bin/exercism_test_helper --combine "${output_dir}/results.json:${output_dir}/metadata.json:${output_dir}/output.json"
+
+# Restore test files
+find "${solution_dir}/test" -type f -name '*.exs' | while read file; do
+  # Skip the test_helper
+  if [[ $(basename "$file") == 'test_helper.exs' ]]; then
+    continue
+  fi
+
+  printf "restoring %q\n" "${file}"
+  cp "${file}.bkp" "${file}"
+done

@@ -17,7 +17,6 @@ defmodule JSONFormatterTest do
     end
   end
 
-
   describe "testsuite - root" do
     test "tags are present at the root" do
       defsuite do
@@ -76,7 +75,10 @@ defmodule JSONFormatterTest do
 
       assert test_status_value == "fail"
       assert test_name_value == "test it will fail"
-      assert test_message_value |> String.trim() |> String.starts_with?("1) test it will fail (JSONFormatterTest.Test")
+
+      assert test_message_value
+             |> String.trim()
+             |> String.starts_with?("1) test it will fail (JSONFormatterTest.Test")
     end
 
     test "on pass, test status is 'pass'" do

@@ -6,15 +6,15 @@ Exercism Automated Test Runner for Elixir Exercises
 
 ## Environment
 
-The test runner currently targets exercises supporting Elixir >= 1.6 and Erlang/OTP >= 20, but is running on Elixir 1.9.4 on the `elixir:1.9.4-alpine` docker image.
+The test runner currently targets exercises supporting Elixir >= 1.6 and Erlang/OTP >= 20, but is running on Elixir 1.10.4 on hexpm's `hexpm/elixir:1.10.4-erlang-23.1.4-ubuntu-focal-20201008` image
 
-The `Dockerfile` also has added `bash` and `jo` to the image (though `jo` has been added from the `edge` repository as it has not been added to a main release as of the latest dockerfile push).
+The `Dockerfile` also has added `bash` and `jo` to the image.
 
 ## Testing
 
 ---
 
-> It is recommended to test BEFORE submitting a PR.  It will test your submission, ensure
+> It is recommended to test BEFORE submitting a PR. It will test your submission, ensure
 > that the repository builds as a whole, and help guard against unintentional, unrelated changes.
 
 ---

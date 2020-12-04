@@ -1,9 +1,9 @@
-defmodule ExercismFormatter.MixProject do
+defmodule ExercismTestHelper.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :exercism_formatter,
+      app: :exercism_test_helper,
       version: "0.1.2",
       elixir: "~> 1.10.4",
       start_permanent: Mix.env() == :prod,
@@ -29,6 +29,6 @@ defmodule ExercismFormatter.MixProject do
   end
 
   defp escript do
-    [main_module: ExercismFormatter.CLI]
+    [main_module: ExercismTestHelper.CLI]
   end
 end

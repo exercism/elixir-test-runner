@@ -1,4 +1,4 @@
-defmodule TestTransformerTest do
+defmodule TestSource.TransformerTest do
   use ExUnit.Case, async: false
 
   # Testing framework inspired by the JUnit Formatter,
@@ -12,7 +12,7 @@ defmodule TestTransformerTest do
         defmodule unquote(Module.concat(__MODULE__, :"Test#{System.unique_integer([:positive])}")) do
           use ExUnit.Case
 
-          unquote(block |> TestTransformer.transform_test_ast())
+          unquote(block |> TestSource.Transformer.transform_test_ast())
         end
 
       name
@@ -30,9 +30,9 @@ defmodule TestTransformerTest do
       end
 
       desired = """
-        [test started] test hello world
-        Hello, World!
-        """
+      [test started] test hello world
+      Hello, World!
+      """
 
       output = capture_io(fn -> run() end)
 
@@ -57,11 +57,11 @@ defmodule TestTransformerTest do
       end
 
       desired = """
-        [test started] test hello world
-        Hello, World!
-        [test started] test spanish weather
-        The rain in Spain stays mainly on the plain.
-        """
+      [test started] test hello world
+      Hello, World!
+      [test started] test spanish weather
+      The rain in Spain stays mainly on the plain.
+      """
 
       output = capture_io(fn -> run() end)
 
@@ -76,8 +76,6 @@ defmodule TestTransformerTest do
 
     if Keyword.has_key?(funs, :modules_loaded) do
       ExUnit.Server.modules_loaded()
-    else
-      ExUnit.Server.cases_loaded()
     end
 
     ExUnit.run()
