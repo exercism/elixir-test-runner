@@ -102,8 +102,10 @@ defmodule Meta.Style do
   defp format(_ast, string), do: string
 
   #
-  # Helper function to format arrow clauses
+  # Helper functions
   #
+
+  # Helper function to format arrow clauses
   defp format_clauses(arrows) do
     force_multiline =
       arrows
@@ -123,9 +125,7 @@ defmodule Meta.Style do
         end).()
   end
 
-  #
   # Helper function to format case expressions prettily
-  #
   defp format_clause({:->, _, [[left], right]}, force_multiline) do
     left = format(left)
     right = format(right)
@@ -140,10 +140,8 @@ defmodule Meta.Style do
     end
   end
 
-  #
   # Helper function to indent every line of a multiline string
   # by a specified number of spaces
-  #
   defp indent_multiline(string, indentation \\ 2) do
     spaces = String.duplicate(" ", indentation)
 
