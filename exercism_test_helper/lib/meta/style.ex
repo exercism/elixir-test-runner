@@ -88,6 +88,17 @@ defmodule Meta.Style do
     """
   end
 
+  # Custom formatting for cond expression
+  defp format({:cond, _, [blocks]}, _) do
+    do_block = format_arrows(blocks[:do])
+
+    """
+    cond do
+    #{do_block}
+    end\
+    """
+  end
+
   defp format(_ast, string), do: string
 
   #

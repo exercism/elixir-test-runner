@@ -289,4 +289,31 @@ defmodule Meta.StyleTest do
 
     assert Style.format(expr) == expected
   end
+
+  test "cond multiline" do
+    expr =
+      quote do
+        cond do
+          false ->
+            :a
+            :never
+
+          true ->
+            :always
+        end
+      end
+
+    expected = """
+    cond do
+      false ->
+        :a
+        :never
+
+      true ->
+        :always
+    end\
+    """
+
+    assert Style.format(expr) == expected
+  end
 end
