@@ -115,7 +115,7 @@ defmodule Meta.Style do
 
     arrows
     |> Enum.map(&format_clause(&1, force_multiline))
-    |> Enum.map(&indent_multiline/1)
+    |> Enum.map(&multiline_indent/1)
     |> (fn code_blocks ->
           if force_multiline do
             Enum.join(code_blocks, "\n\n")
@@ -133,7 +133,7 @@ defmodule Meta.Style do
     if force_multiline or String.contains?(right, "\n") do
       """
       #{left} ->
-      #{indent_multiline(right)}
+      #{multiline_indent(right)}
       """
     else
       "#{left} -> #{right}"
@@ -142,7 +142,7 @@ defmodule Meta.Style do
 
   # Helper function to indent every line of a multiline string
   # by a specified number of spaces
-  defp indent_multiline(string, indentation \\ 2) do
+  defp multiline_indent(string, indentation \\ 2) do
     spaces = String.duplicate(" ", indentation)
 
     string
