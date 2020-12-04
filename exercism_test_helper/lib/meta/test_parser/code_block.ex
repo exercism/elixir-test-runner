@@ -1,4 +1,4 @@
-defmodule Meta.AssertParser.Term do
+defmodule Meta.TestParser.CodeBlock do
   @enforce_keys [:type, :value]
   defstruct [:type, :value]
 
