@@ -40,7 +40,7 @@ defmodule Meta.StyleTest do
     expected = """
     if true do
       :a
-    end
+    end\
     """
 
     assert Style.format(expr) == expected
@@ -61,7 +61,7 @@ defmodule Meta.StyleTest do
       :a
     else
       :b
-    end
+    end\
     """
 
     assert Style.format(expr) == expected
@@ -216,8 +216,74 @@ defmodule Meta.StyleTest do
       x ->
         :a
         :c
+
       y ->
         :b
+    end\
+    """
+
+    assert Style.format(expr) == expected
+  end
+
+  test "case" do
+    expr =
+      quote do
+        case :a do
+          :a -> true
+          _ -> false
+        end
+      end
+
+    expected = """
+    case :a do
+      :a -> true
+      _ -> false
+    end\
+    """
+
+    assert Style.format(expr) == expected
+  end
+
+  test "case multiline" do
+    expr =
+      quote do
+        case :a do
+          :a ->
+            :a
+            true
+
+          _ ->
+            false
+        end
+      end
+
+    expected = """
+    case :a do
+      :a ->
+        :a
+        true
+
+      _ ->
+        false
+    end\
+    """
+
+    assert Style.format(expr) == expected
+  end
+
+  test "cond" do
+    expr =
+      quote do
+        cond do
+          false -> :never
+          true -> :always
+        end
+      end
+
+    expected = """
+    cond do
+      false -> :never
+      true -> :always
     end\
     """
 
