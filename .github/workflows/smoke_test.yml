@@ -24,6 +24,12 @@ jobs:
           cd exercism_test_helper
           mix test
 
+      - name: Build Escript
+        run: |
+          cd exercism_test_helper
+          MIX_ENV=prod mix escript.build
+          mv exercism_test_helper ../bin
+
       - name: Smoke Test
         run: |
           ./bin/run.sh hello-world ./test/hello-world ./test
