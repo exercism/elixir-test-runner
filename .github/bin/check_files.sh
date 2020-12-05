@@ -11,6 +11,8 @@ function main {
       exit 1
     fi
   done
+
+  echo "🏁 expected files present after successful run 🏁"
 }
 
 main "$@"; exit
