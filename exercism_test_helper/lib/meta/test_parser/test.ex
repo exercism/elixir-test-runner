@@ -1,15 +1,15 @@
 defmodule Meta.TestParser.Test do
-  @derive {Jason.Encoder, only: [:name, :test_body]}
-  defstruct [:name, :test_body]
+  @derive {Jason.Encoder, only: [:name, :test_code]}
+  defstruct [:name, :test_code]
 
   alias Meta.TestParser.CodeBlock
 
   def make(description, name, test_block) do
-    test_body = CodeBlock.determine(test_block) |> to_string()
+    test_code = CodeBlock.determine(test_block) |> to_string()
 
     %__MODULE__{
       name: make_name(description, name),
-      test_body: test_body
+      test_code: test_code
     }
   end
 
