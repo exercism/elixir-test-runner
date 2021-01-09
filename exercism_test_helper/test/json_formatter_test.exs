@@ -97,6 +97,25 @@ defmodule JSONFormatterTest do
       assert test_name_value == "test it will pass"
       assert test_message_value == nil
     end
+
+    test "tests are reported in order" do
+      defsuite do
+        test "first test", do: assert(true)
+        test "second test", do: assert(false)
+        test "third test", do: assert(true)
+      end
+
+      output = run_and_capture_output()
+
+      {:ok, json_output} = Jason.decode(output)
+      {:ok, tests} = json_get_in(json_output, ~w{tests})
+
+      assert Enum.map(tests, & &1["name"]) == [
+               "test first test",
+               "test second test",
+               "test third test"
+             ]
+    end
   end
 
   defp run_and_capture_output(opts \\ []) do
