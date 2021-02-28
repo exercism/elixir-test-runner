@@ -6,7 +6,7 @@ Exercism Automated Test Runner for Elixir Exercises
 
 ## Environment
 
-The test runner currently targets exercises supporting Elixir >= 1.6 and Erlang/OTP >= 20, but is running on Elixir 1.10.4 on hexpm's `hexpm/elixir:1.10.4-erlang-23.1.4-ubuntu-focal-20201008` image
+The test runner currently targets exercises supporting Elixir >= 1.6 and Erlang/OTP >= 20, but is running on Elixir 1.11.3 on hexpm's `elixir:1.11.3-erlang-23.2.6-ubuntu-focal-20210119` image
 
 The `Dockerfile` also has added `bash` and `jo` to the image.
 

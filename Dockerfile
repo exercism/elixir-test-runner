@@ -1,4 +1,4 @@
-FROM hexpm/elixir:1.10.4-erlang-23.1.4-ubuntu-focal-20201008
+FROM hexpm/elixir:1.11.3-erlang-23.2.6-ubuntu-focal-20210119
 
 # Install SSL ca certificates
 RUN apt-get update && \
@@ -6,11 +6,6 @@ RUN apt-get update && \
 
 # Create appuser
 RUN useradd -ms /bin/bash appuser
-
-# Get exercism's tooling_webserver
-RUN curl -L -o /usr/local/bin/tooling_webserver \
-  https://github.com/exercism/tooling-webserver/releases/download/0.10.0/tooling_webserver && \
-  chmod +x /usr/local/bin/tooling_webserver
 
 # Get the source code
 WORKDIR /opt/test-runner
