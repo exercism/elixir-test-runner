@@ -1,9 +1,11 @@
 error_log
-metadata.csv
-metadata.json
 output
+metadata.json
 output.json
 results.json
+
+*.exs.bkp
+*.exs.altered
 
 # Ignore the escript binary
 /bin/exercism_test_helper
