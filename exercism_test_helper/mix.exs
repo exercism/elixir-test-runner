@@ -5,7 +5,7 @@ defmodule ExercismTestHelper.MixProject do
     [
       app: :exercism_test_helper,
       version: "0.1.2",
-      elixir: "~> 1.10.4",
+      elixir: "~> 1.11",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       escript: escript()
@@ -24,7 +24,7 @@ defmodule ExercismTestHelper.MixProject do
     [
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
-      {:jason, "~> 1.1"}
+      {:jason, "~> 1.2"}
     ]
   end
 

@@ -2,6 +2,15 @@
 .gitignore
 .github
 
+error_log
+output
+metadata.json
+output.json
+results.json
+
+*.exs.bkp
+*.exs.altered
+
 # The directory Mix will write compiled artifacts to.
 exercism_test_helper/_build/
 
@@ -25,5 +34,3 @@ erl_crash.dump
 
 # Ignore package tarball (built via "mix hex.build").
 exercism_test_helper-*.tar
-
-results.json
