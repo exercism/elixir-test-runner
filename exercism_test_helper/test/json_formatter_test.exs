@@ -27,6 +27,7 @@ defmodule JSONFormatterTest do
 
       {:ok, json_output} = Jason.decode(output)
 
+      assert_json_path(json_output, ~w{version})
       assert_json_path(json_output, ~w{status})
       assert_json_path(json_output, ~w{message})
       assert_json_path(json_output, ~w{tests})

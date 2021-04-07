@@ -29,6 +29,7 @@ defmodule JSONFormatter do
       excluded_counter: 0,
       invalid_counter: 0,
       results: %{
+        version: 2,
         # or :fail, or :error
         status: :pass,
         message: nil,

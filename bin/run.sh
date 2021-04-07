@@ -44,7 +44,7 @@ compile_step=$(MIX_ENV=test mix compile)
 
 # On compilation error, create results.json with compile error, halt script with error
 if [ $? -ne 0 ]; then
-  jo status=error message="${compile_step}" tests="[]" > "${output_dir}/results.json"
+  jo version=2 status=error message="${compile_step}" tests="[]" > "${output_dir}/results.json"
   printf "Compilation contained error, see ${output_dir}/results.json\n"
   exit 0
 fi
