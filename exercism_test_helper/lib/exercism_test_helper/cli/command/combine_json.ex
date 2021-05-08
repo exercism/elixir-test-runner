@@ -1,4 +1,6 @@
 defmodule ExercismTestHelper.CLI.Command.CombineJSON do
+  @version 3
+
   def run([result_json_file, metadata_json_file, log_json_file]) do
     read_decode = fn filename ->
       filename
@@ -16,7 +18,8 @@ defmodule ExercismTestHelper.CLI.Command.CombineJSON do
       |> Enum.map(&add_test_output(&1, log))
 
     updated_results =
-      %{results | "tests" => updated}
+      results
+      |> Map.merge(%{"version" => @version, "tests" => updated})
       |> Jason.encode!()
 
     File.write!(result_json_file, updated_results)
@@ -32,7 +35,7 @@ defmodule ExercismTestHelper.CLI.Command.CombineJSON do
             add_metadata_error_fields(test)
 
           true ->
-            Map.put(test, "test_code", test_metadata["test_code"])
+            Map.merge(test, Map.take(test_metadata, ["test_code", "task_id"]))
         end
 
       true ->

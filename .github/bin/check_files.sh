@@ -12,6 +12,11 @@ function main {
     fi
   done
 
+  if ! diff <(jq -S . ./test/expected_results.json) <(jq -S . ./test/results.json); then
+    echo "🔥 expected ./test/results.json to equal ./test/expected_results.json on successful run 🔥"
+    exit 1
+  fi
+
   echo "🏁 expected files present after successful run 🏁"
 }
 

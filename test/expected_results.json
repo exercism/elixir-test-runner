@@ -1,0 +1,1 @@
+{"message":null,"status":"pass","tests":[{"message":null,"name":"test says 'Hello, World!'","output":"","status":"pass","task_id":1,"test_code":"assert HelloWorld.hello() == \"Hello, World!\""}],"version":3}

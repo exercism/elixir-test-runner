@@ -10,3 +10,6 @@ results.json
 # Ignore the escript binary
 /bin/exercism_test_helper
 /exercism_test_helper/exercism_test_helper
+
+test/hello-world/test/hello_world_test.exs.altered
+test/hello-world/test/hello_world_test.exs.bkp

@@ -27,8 +27,12 @@ defmodule Meta.TestParser do
   end
 
   def pre_order_parse({:test, _, [name, [do: test_block]]} = node, acc) do
-    test = Test.make(acc.description, name, test_block)
+    test = Test.make(acc.description, name, acc.task_id, test_block)
     {node, %{acc | tests: acc.tests ++ [test]}}
+  end
+
+  def pre_order_parse({:@, _, [{:task_id, _, [task_id]}]} = node, acc) do
+    {node, %{acc | task_id: task_id}}
   end
 
   def pre_order_parse(node, acc) do
@@ -41,6 +45,10 @@ defmodule Meta.TestParser do
 
   def post_order_parse({:describe, _, _} = node, acc) do
     {node, %{acc | description: nil}}
+  end
+
+  def post_order_parse({:test, _, _} = node, acc) do
+    {node, %{acc | task_id: nil}}
   end
 
   def post_order_parse(node, acc) do
