@@ -19,7 +19,7 @@ defmodule JSONFormatter do
     config = %{
       seed: opts[:seed],
       trace: opts[:trace],
-      colors: [enabled: false],
+      colors: [enabled: true],
       width: opts[:width] || 80,
       slowest: opts[:slowest],
       test_counter: %{},
