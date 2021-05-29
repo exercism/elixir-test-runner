@@ -51,7 +51,7 @@ defmodule JSONFormatter do
   end
 
   @impl true
-  def handle_cast({:suite_finished, _run_us, _load_us}, config) do
+  def handle_cast({:suite_finished, _times_us}, config) do
     # tests needs to be reported from first to last
     config = update_in(config, [:results, :tests], &Enum.reverse/1)
     {:ok, json_results} = Jason.encode(config.results)

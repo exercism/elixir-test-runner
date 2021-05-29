@@ -49,40 +49,13 @@ if [ $? -ne 0 ]; then
   exit 0
 fi
 
-# Move JSONFormatter and Jason beam files to submission
-# ebin_dir=$(find ./_build/test -type d -name 'ebin' | head -n 1)
-
-# find "${base_dir}/exercism_test_helper/_build/test" -type f -name '*.beam' | while read file; do
-#   echo "cp ${file} -> ${ebin_dir}"
-#   cp -f "${file}" "${ebin_dir}"
-# done
-
 # Run submission test
 export JSON_PRINT_FILE=1
 export JSON_REPORT_DIR="$output_dir"
 
-# Original
-# mix test \
-#   --seed 0 \
-#   --no-compile \
-#   --no-deps-check \
-#   --include pending:true \
-#   --formatter JSONFormatter \
-#   > "${output_dir}/output" 2> "${output_dir}/error_log"
-
-# With env set
-# export ERL_FLAGS="-pa ${base_dir}/exercism_test_helper/_build/test/lib/exercism_test_helper/ebin"
-
-#  mix test \
-#   --seed 0 \
-#   --no-deps-check \
-#   --include pending:true \
-#   --formatter JSONFormatter \
-#   > "${output_dir}/output" 2> "${output_dir}/error_log"
-
-# As suggested by Jose
 elixir \
-  -pa "${base_dir}/exercism_test_helper/_build/test/lib/exercism_test_helper/ebin" \
+  -pa ${base_dir}/exercism_test_helper/_build/test/lib/exercism_test_helper/ebin \
+  -pa ${base_dir}/exercism_test_helper/_build/test/lib/jason/ebin \
   -S mix test \
   --seed 0 \
   --no-compile \
