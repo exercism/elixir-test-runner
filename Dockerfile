@@ -1,4 +1,4 @@
-FROM hexpm/elixir:1.11.3-erlang-23.2.6-ubuntu-focal-20210119
+FROM hexpm/elixir:1.12.1-erlang-24.0.1-ubuntu-focal-20210325
 
 # Install SSL ca certificates
 RUN apt-get update && \
