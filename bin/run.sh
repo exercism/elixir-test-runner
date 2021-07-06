@@ -60,7 +60,6 @@ elixir \
   --seed 0 \
   --no-compile \
   --no-deps-check \
-  --include pending:true \
   --formatter JSONFormatter \
   > "${output_dir}/output" 2> "${output_dir}/error_log"
 
