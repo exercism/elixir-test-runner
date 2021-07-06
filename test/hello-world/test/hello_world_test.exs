@@ -6,6 +6,7 @@ defmodule(HelloWorldTest) do
     assert(HelloWorld.hello() == "Hello, World!")
   end
 
+  @tag :pending
   @task_id 2
   test("failing test") do
     assert [1, 2, 3] == [2, 3]
