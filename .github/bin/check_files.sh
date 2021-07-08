@@ -12,6 +12,11 @@ function main {
     fi
   done
 
+  if ! jq -S .version ./test/expected_results.json; then
+    echo "🔥 jq cannot read file ./test/expected_results.json 🔥"
+    exit 1
+  fi
+
   if ! diff <(jq -S . ./test/expected_results.json) <(jq -S . ./test/results.json); then
     echo "🔥 expected ./test/results.json to equal ./test/expected_results.json on successful run 🔥"
     exit 1
