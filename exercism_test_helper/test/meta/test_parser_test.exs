@@ -114,7 +114,7 @@ defmodule Meta.TestParserTest do
       defmodule(HelloWorldTest) do
         use(ExUnit.Case)
 
-        @task_id 1
+        @tag task_id: 1
         test("test A1 - task 1") do
         end
 
@@ -122,19 +122,22 @@ defmodule Meta.TestParserTest do
         end
 
         describe "describe1" do
+          @tag :pending
           test("test B1 - general") do
           end
 
-          @task_id 2
-          @task_id 1
+          @tag :pending
+          @tag task_id: 2
+          @tag task_id: 1
           test("test B2 - task 1") do
           end
 
-          @task_id 1
+          @tag :pending
+          @tag task_id: 1
           test("test B3 - task 1") do
           end
 
-          @task_id 2
+          @tag task_id: 2
           test("test B4 - task 2") do
           end
 
@@ -143,15 +146,26 @@ defmodule Meta.TestParserTest do
         end
 
         describe "describe2" do
-          @task_id 3
+          @tag task_id: 3
           test("test C1 - task 3") do
           end
 
           test("test C2 - general") do
           end
 
-          @task_id 4
+          @tag something_unrelated: :foo
+          @tag :slow
+          @tag task_id: 4
+          @tag :pending
           test("test C3 - task 4") do
+          end
+
+          @tag :task_id
+          test("test C4 - general") do
+          end
+
+          @tag task_id: :foo
+          test("test C5 - general") do
           end
         end
       end
@@ -170,7 +184,9 @@ defmodule Meta.TestParserTest do
                  %T{name: "test describe1 test B5 - general", task_id: nil, test_code: ""},
                  %T{name: "test describe2 test C1 - task 3", task_id: 3, test_code: ""},
                  %T{name: "test describe2 test C2 - general", task_id: nil, test_code: ""},
-                 %T{name: "test describe2 test C3 - task 4", task_id: 4, test_code: ""}
+                 %T{name: "test describe2 test C3 - task 4", task_id: 4, test_code: ""},
+                 %T{name: "test describe2 test C4 - general", task_id: nil, test_code: ""},
+                 %T{name: "test describe2 test C5 - general", task_id: nil, test_code: ""}
                ]
              }
     end

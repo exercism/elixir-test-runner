@@ -31,7 +31,8 @@ defmodule Meta.TestParser do
     {node, %{acc | tests: acc.tests ++ [test]}}
   end
 
-  def pre_order_parse({:@, _, [{:task_id, _, [task_id]}]} = node, acc) do
+  def pre_order_parse({:@, _, [{:tag, _, [[task_id: task_id]]}]} = node, acc)
+      when is_integer(task_id) do
     {node, %{acc | task_id: task_id}}
   end
 
