@@ -2,6 +2,18 @@
 
 set -euo pipefail
 
+function installed {
+  cmd=$(command -v "${1}")
+
+  [[ -n "${cmd}" ]] && [[ -f "${cmd}" ]]
+  return ${?}
+}
+
+function die {
+  >&2 echo "Fatal: ${@}"
+  exit 1
+}
+
 function main {
   expected_files=(metadata.json output error_log results.json output.json)
 
@@ -19,5 +31,11 @@ function main {
 
   echo "🏁 expected files present after successful run 🏁"
 }
+
+# Check for all required dependencies
+deps=(diff jq)
+for dep in "${deps[@]}"; do
+  installed "${dep}" || die "Missing '${dep}'"
+done
 
 main "$@"; exit
