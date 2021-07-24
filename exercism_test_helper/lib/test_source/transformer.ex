@@ -14,6 +14,7 @@ defmodule TestSource.Transformer do
   defp apply_transforms(node) do
     node
     |> insert_test_io_header()
+    |> remove_pending_tag()
   end
 
   defp insert_test_io_header({:test, meta, [name, block]}) do
@@ -46,4 +47,12 @@ defmodule TestSource.Transformer do
       IO.puts("[test started] test " <> unquote(name))
     end
   end
+
+  defp remove_pending_tag({name, meta, args}) when is_list(args),
+    do: {name, meta, Enum.reject(args, &pending_tag?/1)}
+
+  defp remove_pending_tag(node), do: node
+
+  defp pending_tag?({:@, _, [{:tag, _, [:pending]}]}), do: true
+  defp pending_tag?(node), do: false
 end
