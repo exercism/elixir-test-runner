@@ -34,7 +34,7 @@ defmodule TestSource.TransformerTest do
       Hello, World!
       """
 
-      output = capture_io(fn -> run() end)
+      output = capture_io(fn -> run(exclude: [:slow, :pending]) end)
 
       assert output == desired
     end
@@ -49,6 +49,7 @@ defmodule TestSource.TransformerTest do
           assert(false)
         end
 
+        @tag :pending
         test "spanish weather" do
           IO.puts(:stdio, "The rain in Spain stays mainly on the plain.")
 
@@ -63,13 +64,54 @@ defmodule TestSource.TransformerTest do
       The rain in Spain stays mainly on the plain.
       """
 
-      output = capture_io(fn -> run() end)
+      output = capture_io(fn -> run(exclude: [:slow, :pending]) end)
 
       assert output == desired
     end
   end
 
-  defp run(opts \\ []) do
+  describe "testsuite - more tests" do
+    test "strips pending tags" do
+      defsuite do
+        test "will be run 1" do
+          assert(true)
+        end
+
+        @tag :pending
+        test "will be run 2" do
+          assert(true)
+        end
+
+        @tag pending: true
+        test "will be run 3" do
+          assert(true)
+        end
+
+        @tag :pending
+        @tag :slow
+        test "will not be run 1" do
+          assert(true)
+        end
+
+        @tag :slow
+        test "will not be run 2" do
+          assert(true)
+        end
+      end
+
+      desired = """
+      [test started] test will be run 1
+      [test started] test will be run 2
+      [test started] test will be run 3
+      """
+
+      output = capture_io(fn -> run(exclude: [:slow, :pending]) end)
+
+      assert output == desired
+    end
+  end
+
+  defp run(opts) do
     ExUnit.configure(Keyword.merge(opts, formatters: [OutputFormatter]))
 
     funs = ExUnit.Server.__info__(:functions)
