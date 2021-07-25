@@ -54,5 +54,6 @@ defmodule TestSource.Transformer do
   defp remove_pending_tag(node), do: node
 
   defp pending_tag?({:@, _, [{:tag, _, [:pending]}]}), do: true
+  defp pending_tag?({:@, _, [{:tag, _, [[pending: _]]}]}), do: true
   defp pending_tag?(_node), do: false
 end
