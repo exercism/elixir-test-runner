@@ -229,11 +229,33 @@ defmodule Meta.TestParserTest do
                description: nil,
                task_id: nil,
                tests: [
-                 %T{name: "test included test 1", task_id: nil, test_code: ""},
-                 %T{name: "test included test 2", task_id: nil, test_code: ""},
-                 %T{name: "test describe1 included test 3", task_id: nil, test_code: ""},
-                 %T{name: "test describe1 included test 4", task_id: nil, test_code: ""},
-                 %T{name: "test describe1 included test 5", task_id: nil, test_code: ""}
+                 %T{name: "test included test 1", exclude: false, task_id: nil, test_code: ""},
+                 %T{name: "test excluded test 1", exclude: true, task_id: nil, test_code: ""},
+                 %T{name: "test included test 2", exclude: false, task_id: nil, test_code: ""},
+                 %T{
+                   name: "test describe1 included test 3",
+                   exclude: false,
+                   task_id: nil,
+                   test_code: ""
+                 },
+                 %T{
+                   name: "test describe1 included test 4",
+                   exclude: false,
+                   task_id: nil,
+                   test_code: ""
+                 },
+                 %T{
+                   name: "test describe1 excluded test 2",
+                   exclude: true,
+                   task_id: nil,
+                   test_code: ""
+                 },
+                 %T{
+                   name: "test describe1 included test 5",
+                   exclude: false,
+                   task_id: nil,
+                   test_code: ""
+                 }
                ]
              }
     end
