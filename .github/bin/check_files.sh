@@ -21,17 +21,17 @@ function main {
 
   for file in ${expected_files[@]}; do
     if [[ ! -f "./test/${exercise}/${file}" ]]; then
-      echo "🔥 expected ${file} to exist on successful run 🔥"
+      echo "🔥 ${exercise}: expected ${file} to exist on successful run 🔥"
       exit 1
     fi
   done
 
   if ! diff <(jq -S . ./test/${exercise}/expected_results.json) <(jq -S . ./test/${exercise}/results.json); then
-    echo "🔥 expected ./test/${exercise}/results.json to equal ./test/${exercise}/expected_results.json on successful run 🔥"
+    echo "🔥 ${exercise}: expected ./test/${exercise}/results.json to equal ./test/${exercise}/expected_results.json on successful run 🔥"
     exit 1
   fi
 
-  echo "🏁 expected files present after successful run 🏁"
+  echo "🏁 ${exercise}: expected files present after successful run 🏁"
 }
 
 # Check for all required dependencies
