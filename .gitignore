@@ -11,5 +11,5 @@ results.json
 /bin/exercism_test_helper
 /exercism_test_helper/exercism_test_helper
 
-test/hello-world/test/hello_world_test.exs.altered
-test/hello-world/test/hello_world_test.exs.bkp
+test/**/test/*_test.exs.altered
+test/**/test/*_test.exs.bkp

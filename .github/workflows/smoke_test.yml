@@ -33,7 +33,11 @@ jobs:
 
       - name: Smoke Test
         run: |
-          ./bin/run.sh hello-world ./test/hello-world ./test
+          ./bin/run.sh hello-world ./test/hello-world ./test/hello-world &&
+          ./bin/run.sh community-garden ./test/community-garden ./test/community-garden
 
       - name: Verify files present
-        run: ./.github/bin/check_files.sh
+        run: |
+          ./.github/bin/check_files.sh hello-world &&
+          ./.github/bin/check_files.sh community-garden
+
