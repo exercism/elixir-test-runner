@@ -12,6 +12,8 @@ defmodule JSONFormatter do
   # Import `format_test_failure/5` to provide useful feedback to submissions
   import ExUnit.Formatter, only: [format_test_failure: 5]
 
+  import Inspect.Algebra, only: [is_doc: 1]
+
   # Callbacks
 
   @impl true
@@ -224,6 +226,11 @@ defmodule JSONFormatter do
   defp formatter(_, msg, _config), do: msg
 
   # Colorize Utility Functions -- from ExUnit.CLIFormatter, but can't import d/t being private in source
+
+  defp colorize(escape, msg, config) when is_doc(msg) do
+    msg = Inspect.Algebra.format(msg, 2)
+    colorize(escape, msg, config)
+  end
 
   defp colorize(escape, string, %{colors: colors}) do
     if colors[:enabled] do
