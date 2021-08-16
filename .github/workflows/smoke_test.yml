@@ -35,11 +35,13 @@ jobs:
         run: |
           ./bin/run.sh hello-world ./test/hello-world ./test/hello-world &&
           ./bin/run.sh need-for-speed ./test/need-for-speed ./test/need-for-speed &&
-          ./bin/run.sh community-garden ./test/community-garden ./test/community-garden
+          ./bin/run.sh community-garden ./test/community-garden ./test/community-garden &&
+          ./bin/run.sh bread-and-potions ./test/bread-and-potions ./test/bread-and-potions
 
       - name: Verify files present
         run: |
           ./.github/bin/check_files.sh hello-world &&
           ./.github/bin/check_files.sh need-for-speed &&
-          ./.github/bin/check_files.sh community-garden
+          ./.github/bin/check_files.sh community-garden &&
+          ./.github/bin/check_files.sh bread-and-potions
 
