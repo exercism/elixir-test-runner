@@ -58,7 +58,6 @@ elixir \
   -pa ${base_dir}/exercism_test_helper/_build/test/lib/jason/ebin \
   -S mix test \
   --seed 0 \
-  --no-compile \
   --no-deps-check \
   --exclude slow \
   --formatter JSONFormatter \

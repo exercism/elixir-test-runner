@@ -4,6 +4,7 @@ defmodule TestSource.Transformer do
     |> Code.string_to_quoted!()
     |> transform_test_ast()
     |> Macro.to_string()
+    |> unescape_final_newlines()
   end
 
   def transform_test_ast(ast) do
@@ -15,6 +16,7 @@ defmodule TestSource.Transformer do
     node
     |> insert_test_io_header()
     |> remove_pending_tag()
+    |> escape_newlines()
   end
 
   defp insert_test_io_header({:test, meta, [name, block]}) do
@@ -56,4 +58,16 @@ defmodule TestSource.Transformer do
   defp pending_tag?({:@, _, [{:tag, _, [:pending]}]}), do: true
   defp pending_tag?({:@, _, [{:tag, _, [[pending: _]]}]}), do: true
   defp pending_tag?(_node), do: false
+
+  # this necessary due to a bug in Macro.to_string that is already fixed on Elixir master branch
+  # remove when migrating Elixir 1.12 -> 1.13
+  defp escape_newlines(string) when is_binary(string),
+    do: String.replace(string, "\n", "\\n")
+
+  defp escape_newlines(node), do: node
+
+  # this necessary due to a bug in Macro.to_string that is already fixed on Elixir master branch
+  # remove when migrating Elixir 1.12 -> 1.13
+  defp unescape_final_newlines(str),
+    do: String.replace(str, "\\\\n", "\\n")
 end
