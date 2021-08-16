@@ -14,6 +14,7 @@ defmodule ExercismTestHelper.CLI.Command.CombineJSON do
 
     updated =
       results["tests"]
+      |> Enum.reject(&reject_excluded(&1, metadata["tests"]))
       |> Enum.map(&add_metadata(&1, metadata["tests"]))
       |> Enum.map(&add_test_output(&1, log))
 
@@ -23,6 +24,11 @@ defmodule ExercismTestHelper.CLI.Command.CombineJSON do
       |> Jason.encode!()
 
     File.write!(result_json_file, updated_results)
+  end
+
+  defp reject_excluded(%{"name" => name}, metadata) do
+    test_metadata = Enum.find(metadata, nil, fn entry -> entry["name"] == name end)
+    test_metadata["exclude"]
   end
 
   defp add_metadata(%{"name" => name} = test, metadata) do
