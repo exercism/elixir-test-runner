@@ -27,21 +27,13 @@ defmodule Meta.TestParser do
   end
 
   def pre_order_parse({:test, _, [name, [do: test_block]]} = node, acc) do
-    test = Test.make(acc.description, name, acc.task_id, acc.exclude, test_block)
+    test = Test.make(acc.description, name, acc.task_id, test_block)
     {node, %{acc | tests: acc.tests ++ [test]}}
   end
 
   def pre_order_parse({:@, _, [{:tag, _, [[task_id: task_id]]}]} = node, acc)
       when is_integer(task_id) do
     {node, %{acc | task_id: task_id}}
-  end
-
-  def pre_order_parse({:@, _, [{:tag, _, [:slow]}]} = node, acc) do
-    {node, %{acc | exclude: true}}
-  end
-
-  def pre_order_parse({:@, _, [{:tag, _, [[slow: _]]}]} = node, acc) do
-    {node, %{acc | exclude: true}}
   end
 
   def pre_order_parse(node, acc) do
@@ -57,7 +49,7 @@ defmodule Meta.TestParser do
   end
 
   def post_order_parse({:test, _, _} = node, acc) do
-    {node, %{acc | task_id: nil, exclude: false}}
+    {node, %{acc | task_id: nil}}
   end
 
   def post_order_parse(node, acc) do
