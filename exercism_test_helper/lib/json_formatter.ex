@@ -85,6 +85,14 @@ defmodule JSONFormatter do
     {:noreply, config}
   end
 
+  # Special case, excluded tests with a :slow tag are discarded
+  def handle_cast(
+        {:test_finished, %ExUnit.Test{state: {:excluded, _}, tags: %{slow: true}}},
+        config
+      ) do
+    {:noreply, config}
+  end
+
   def handle_cast({:test_finished, %ExUnit.Test{state: {:excluded, _}} = test}, config) do
     test_counter = update_test_counter(config.test_counter, test)
 

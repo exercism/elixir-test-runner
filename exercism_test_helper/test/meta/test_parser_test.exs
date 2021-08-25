@@ -154,6 +154,7 @@ defmodule Meta.TestParserTest do
           end
 
           @tag something_unrelated: :foo
+          @tag :slow
           @tag task_id: 4
           @tag :pending
           test("test C3 - task 4") do
@@ -186,76 +187,6 @@ defmodule Meta.TestParserTest do
                  %T{name: "test describe2 test C3 - task 4", task_id: 4, test_code: ""},
                  %T{name: "test describe2 test C4 - general", task_id: nil, test_code: ""},
                  %T{name: "test describe2 test C5 - general", task_id: nil, test_code: ""}
-               ]
-             }
-    end
-
-    test "doesn't include slow tests" do
-      code = """
-      defmodule(HelloWorldTest) do
-        use(ExUnit.Case)
-
-        @tag :pending
-        test("included test 1") do
-        end
-
-        @tag :pending
-        @tag :slow
-        test("excluded test 1") do
-        end
-
-        test("included test 2") do
-        end
-
-        describe "describe1" do
-          test("included test 3") do
-          end
-
-          @tag :something_else
-          test("included test 4") do
-          end
-
-          @tag slow: true
-          test("excluded test 2") do
-          end
-
-          test("included test 5") do
-          end
-        end
-      end
-      """
-
-      assert Meta.TestParser.parse(code) == %Meta.TestParser.TestSuite{
-               description: nil,
-               task_id: nil,
-               tests: [
-                 %T{name: "test included test 1", exclude: false, task_id: nil, test_code: ""},
-                 %T{name: "test excluded test 1", exclude: true, task_id: nil, test_code: ""},
-                 %T{name: "test included test 2", exclude: false, task_id: nil, test_code: ""},
-                 %T{
-                   name: "test describe1 included test 3",
-                   exclude: false,
-                   task_id: nil,
-                   test_code: ""
-                 },
-                 %T{
-                   name: "test describe1 included test 4",
-                   exclude: false,
-                   task_id: nil,
-                   test_code: ""
-                 },
-                 %T{
-                   name: "test describe1 excluded test 2",
-                   exclude: true,
-                   task_id: nil,
-                   test_code: ""
-                 },
-                 %T{
-                   name: "test describe1 included test 5",
-                   exclude: false,
-                   task_id: nil,
-                   test_code: ""
-                 }
                ]
              }
     end
