@@ -111,6 +111,53 @@ defmodule TestSource.TransformerTest do
     end
   end
 
+  describe "testsuite - tests with describe blocks" do
+    test "strips pending tags" do
+      defsuite do
+        describe "group 1" do
+          test "will be run 1" do
+            assert(true)
+          end
+
+          @tag :pending
+          test "will be run 2" do
+            assert(true)
+          end
+        end
+
+        describe "group 2" do
+          @tag pending: true
+          test "will be run 3" do
+            assert(true)
+          end
+        end
+
+        describe "group 3" do
+          @tag :pending
+          @tag :slow
+          test "will not be run 1" do
+            assert(true)
+          end
+
+          @tag :slow
+          test "will not be run 2" do
+            assert(true)
+          end
+        end
+      end
+
+      desired = """
+      [test started] test group 1 will be run 1
+      [test started] test group 1 will be run 2
+      [test started] test group 2 will be run 3
+      """
+
+      output = capture_io(fn -> run(exclude: [:slow, :pending]) end)
+
+      assert output == desired
+    end
+  end
+
   defp run(opts) do
     ExUnit.configure(Keyword.merge(opts, formatters: [OutputFormatter]))
 
