@@ -27,8 +27,8 @@ For an in-depth discussion of how exercism language tracks and exercises work, p
 
 For a -- hopefully -- in-depth discussion of how this repo fits inside of the larger automated testing framework, see [exercism's automated testing repo](https://github.com/exercism/automated-tests)
 
-- The interface the tester needs to satisfy --> [interface.md](https://github.com/exercism/automated-tests/blob/master/docs/interface.md)
-- The docker interface the tester needs to satisfy --> [docker.md](https://github.com/exercism/automated-tests/blob/master/docs/docker.md)
+- The interface the tester needs to satisfy --> [interface](https://exercism.org/docs/building/tooling/test-runners/interface)
+- The docker interface the tester needs to satisfy --> [docker](https://exercism.org/docs/building/tooling/test-runners/docker)
 
 For documentation about the internals of this repo, please see:
 
