@@ -37,3 +37,4 @@ exercism_test_helper-*.tar
 .appends
 .gitattributes
 .dockerignore
+Dockerfile
