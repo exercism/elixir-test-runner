@@ -36,3 +36,4 @@ erl_crash.dump
 exercism_test_helper-*.tar
 .appends
 .gitattributes
+.dockerignore
