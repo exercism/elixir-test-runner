@@ -34,3 +34,7 @@ erl_crash.dump
 
 # Ignore package tarball (built via "mix hex.build").
 exercism_test_helper-*.tar
+.appends
+.gitattributes
+.dockerignore
+Dockerfile
