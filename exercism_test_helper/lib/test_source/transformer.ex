@@ -92,10 +92,17 @@ defmodule TestSource.Transformer do
   # this necessary due to a bug in Macro.to_string that is already fixed on Elixir master branch
   # remove when migrating Elixir 1.12 -> 1.13
   defp fix_get_notation(node, string) do
-    if is_list(node) and Enum.all?(node, &Kernel.is_integer/1) do
-      inspect(node, charlists: :as_lists)
-    else
-      string
+    cond do
+      # fix palindrome-products were palindromes[97] becomes palindromes'a'
+      is_list(node) and Enum.all?(node, &Kernel.is_integer/1) ->
+        inspect(node, charlists: :as_lists)
+
+      # fix forth where strings in special forms don't get unescaped
+      is_binary(node) and String.starts_with?(string, "<<") ->
+        String.replace(node, "\\n", "\n") |> inspect()
+
+      true ->
+        string
     end
   end
 end
