@@ -95,7 +95,7 @@ defmodule TestSource.Transformer do
     cond do
       # fix palindrome-products were palindromes[97] becomes palindromes'a'
       is_list(node) and Enum.all?(node, &Kernel.is_integer/1) ->
-        inspect(node, charlists: :as_lists)
+        inspect(node, charlists: :as_lists, limit: :infinity)
 
       # fix forth where strings in special forms don't get unescaped
       is_binary(node) and String.starts_with?(string, "<<") ->
