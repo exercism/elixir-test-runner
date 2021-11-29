@@ -97,6 +97,11 @@ defmodule TestSource.Transformer do
       is_list(node) and Enum.all?(node, &Kernel.is_integer/1) ->
         inspect(node, charlists: :as_lists, limit: :infinity)
 
+      # fix side effect of previous line where ~w(a b)a becomes ~w(a b)[97]
+      match?({:sigil_w, _, [{:<<>>, _, [_args]}, _charlist]}, node) ->
+       {:sigil_w, _, [{:<<>>, _, [args]}, charlist]} = node
+       "~w(#{args})#{charlist}" 
+
       # fix forth where strings in special forms don't get unescaped
       is_binary(node) and String.starts_with?(string, "<<") ->
         String.replace(node, "\\n", "\n") |> inspect()
