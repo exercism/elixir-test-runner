@@ -10,7 +10,18 @@ jobs:
       image: hexpm/elixir:1.12.0-erlang-24.0.1-ubuntu-focal-20210325
 
     steps:
+      - name: Install git
+        run: |
+          apt-get update
+          apt-get install -y git
+
       - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+        with:
+          submodules: recursive
+
+      - name: Update submodules
+        run: |
+          git submodule update --init --recursive --remote
 
       - name: Install / Build Dependencies
         run: |
@@ -47,3 +58,6 @@ jobs:
           ./.github/bin/check_files.sh pythagorean-triplet &&
           ./.github/bin/check_files.sh bread-and-potions
 
+      - name: Smoke tests for all exercises
+        run: |
+          ./bin/test_all_exercises.sh

@@ -3,7 +3,7 @@ defmodule TestSource.Transformer do
     file_contents
     |> Code.string_to_quoted!()
     |> transform_test_ast()
-    |> Macro.to_string()
+    |> Macro.to_string(&fix_get_notation/2)
     |> unescape_final_newlines()
   end
 
@@ -88,4 +88,26 @@ defmodule TestSource.Transformer do
   # remove when migrating Elixir 1.12 -> 1.13
   defp unescape_final_newlines(str),
     do: String.replace(str, "\\\\n", "\\n")
+
+  # this necessary due to a bug in Macro.to_string that is already fixed on Elixir master branch
+  # remove when migrating Elixir 1.12 -> 1.13
+  defp fix_get_notation(node, string) do
+    cond do
+      # fix palindrome-products were palindromes[97] becomes palindromes'a'
+      is_list(node) and Enum.all?(node, &Kernel.is_integer/1) ->
+        inspect(node, charlists: :as_lists, limit: :infinity)
+
+      # fix side effect of previous line where ~w(a b)a becomes ~w(a b)[97]
+      match?({:sigil_w, _, [{:<<>>, _, [_args]}, _charlist]}, node) ->
+       {:sigil_w, _, [{:<<>>, _, [args]}, charlist]} = node
+       "~w(#{args})#{charlist}" 
+
+      # fix forth where strings in special forms don't get unescaped
+      is_binary(node) and String.starts_with?(string, "<<") ->
+        String.replace(node, "\\n", "\n") |> inspect()
+
+      true ->
+        string
+    end
+  end
 end
