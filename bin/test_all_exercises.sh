@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+# Uncomment the next line for exiting the script at the first test failure
+# (no error message will be displayed)
+# set -euo pipefail
 
 # ###
 # Script is to test each exercise against it's test unit individually
