@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-# Uncomment the next line for exiting the script at the first test failure
-# (no error message will be displayed)
-# set -euo pipefail
+set -euo pipefail
 
 # ###
 # Script is to test each exercise against it's test unit individually
@@ -43,8 +41,8 @@ base_dir=$(pwd)
 exercises=`echo elixir/exercises/*/*`
 
 # clean submodule for repeated local use
-git submodule --quiet foreach git reset --hard
-git submodule --quiet foreach git clean --force
+git submodule --quiet foreach git reset --hard --quiet
+git submodule --quiet foreach git clean --force --quiet
 
 if [[ ! -z "$@" ]]; then
   pattern=$(echo "$@" | sed 's/ /|/g')
@@ -95,6 +93,7 @@ do
     done
 
     # perform tests
+    set +e
     test_results=$(elixir \
       -pa ${base_dir}/exercism_test_helper/_build/test/lib/exercism_test_helper/ebin \
       -S mix test \
@@ -102,6 +101,7 @@ do
       --no-deps-check \
       --exclude slow)
     test_exit_code="$?"
+    set -e
 
     # based on compiler and unit test, print results
     if [ "${test_exit_code}" -eq 0 ]
@@ -110,17 +110,8 @@ do
       pass_count=$((pass_count+1))
     else
       printf "\\033[31mFail\\033[0m\n"
-
-      if [ "${compile_exit_code}" -ne 0 ]
-      then
-        printf "\\033[36mcompiler output\\033[0m "; printf -- '-%.0s' {1..61}; echo ""
-        printf "${compiler_results}\n"
-      fi
-      if [ "${test_exit_code}" -ne 0 -a "${test_exit_code}" -ne 5 ]
-      then
-        printf "\\033[36mtest output\\033[0m "; printf -- '-%.0s' {1..65}; echo ""
-        printf "${test_results}\n"
-      fi
+      printf "\\033[36mtest output\\033[0m "; printf -- '-%.0s' {1..65}; echo ""
+      printf "${test_results}\n"
       printf -- '-%.0s' {1..80}; echo ""
 
       fail_count=$((fail_count+1))
