@@ -1,4 +1,5 @@
 defmodule Meta.Style do
+  # TODO: Macro.to_string/2 is deprecated
   def format(ast), do: Macro.to_string(ast, &format/2)
 
   # Custom formatting handler for `if` and `unless` expressions
