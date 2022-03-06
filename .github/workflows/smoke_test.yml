@@ -42,22 +42,16 @@ jobs:
           MIX_ENV=prod mix escript.build
           mv exercism_test_helper ../bin
 
-      - name: Smoke Test
-        run: |
-          ./bin/run.sh hello-world ./test/hello-world ./test/hello-world &&
-          ./bin/run.sh need-for-speed ./test/need-for-speed ./test/need-for-speed &&
-          ./bin/run.sh community-garden ./test/community-garden ./test/community-garden &&
-          ./bin/run.sh pythagorean-triplet ./test/pythagorean-triplet ./test/pythagorean-triplet &&
-          ./bin/run.sh bread-and-potions ./test/bread-and-potions ./test/bread-and-potions
-
-      - name: Verify files present
-        run: |
-          ./.github/bin/check_files.sh hello-world &&
-          ./.github/bin/check_files.sh need-for-speed &&
-          ./.github/bin/check_files.sh community-garden &&
-          ./.github/bin/check_files.sh pythagorean-triplet &&
-          ./.github/bin/check_files.sh bread-and-potions
-
       - name: Smoke tests for all exercises
         run: |
           ./bin/test_all_exercises.sh
+
+  smoke_test_in_docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846
+
+      - name: Run Smoke Test in Docker
+        run: bin/run-tests-in-docker.sh
