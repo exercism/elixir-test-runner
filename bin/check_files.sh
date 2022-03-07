@@ -2,7 +2,8 @@
 
 set -euo pipefail
 
-exercise=$1
+input_dir=$1
+output_dir=$2
 
 function installed {
   cmd=$(command -v "${1}")
@@ -17,21 +18,23 @@ function die {
 }
 
 function main {
-  expected_files=(metadata.json output error_log results.json output.json expected_results.json)
 
-  for file in ${expected_files[@]}; do
-    if [[ ! -f "${exercise}/${file}" ]]; then
-      echo "🔥 ${exercise}: expected ${file} to exist on successful run 🔥"
-      exit 1
-    fi
-  done
-
-  if ! diff <(jq -S . ${exercise}/expected_results.json) <(jq -S . ${exercise}/results.json); then
-    echo "🔥 ${exercise}: expected ${exercise}/results.json to equal ${exercise}/expected_results.json on successful run 🔥"
+  if [[ ! -f "${input_dir}/expected_results.json" ]]; then
+    echo "🔥 ${input_dir}: expected expected_results.json to exist 🔥"
     exit 1
   fi
 
-  echo "🏁 ${exercise}: expected files present after successful run 🏁"
+  if [[ ! -f "${output_dir}/results.json" ]]; then
+    echo "🔥 ${output_dir}: expected results.json to exist on successful run 🔥"
+    exit 1
+  fi
+
+  if ! diff <(jq -S . ${input_dir}/expected_results.json) <(jq -S . ${output_dir}/results.json); then
+    echo "🔥 ${input_dir}: expected ${output_dir}/results.json to equal ${input_dir}/expected_results.json on successful run 🔥"
+    exit 1
+  fi
+
+  echo "🏁 ${input_dir}: expected files present after successful run 🏁"
 }
 
 # Check for all required dependencies

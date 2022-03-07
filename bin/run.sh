@@ -21,10 +21,9 @@ solution_dir=$(realpath $2)
 output_dir=$(realpath $3)
 
 # Copy solution to /tmp
-mkdir -p /tmp/solution
-rm -rf /tmp/solution
-cp -r ${solution_dir} /tmp/solution
-solution_dir=/tmp/solution
+tmp_sol=$(mktemp -d /tmp/solution_XXXXXXXXXX)
+cp -r ${solution_dir}/* ${tmp_sol}
+solution_dir=${tmp_sol}
 
 # Find the exercise test files
 find "${solution_dir}/test" -type f -name '*.exs' | while read file; do
