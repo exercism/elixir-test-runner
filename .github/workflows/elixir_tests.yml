@@ -31,7 +31,7 @@ jobs:
           mix local.hex --force
           mix deps.get
 
-      - name: Run Tests
+      - name: Run ExercismTestHelper unit tests
         run: |
           cd exercism_test_helper
           mix test
@@ -42,7 +42,7 @@ jobs:
           MIX_ENV=prod mix escript.build
           mv exercism_test_helper ../bin
 
-      - name: Smoke tests for all exercises
+      - name: Run tests on all exercises exemploid solutions
         run: |
           ./bin/test_all_exercises.sh
 
