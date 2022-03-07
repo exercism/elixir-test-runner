@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 
-set -e # Make script exit when a command fail.
-set -u # Exit on usage of undeclared variable.
-# set -x # Trace what gets executed.
-set -o pipefail # Catch failures in pipes.
+set -euo pipefail
 
 for solution in test/* ; do
   slug=$(basename $(dirname $solution))

@@ -16,10 +16,7 @@
 # Example:
 # ./bin/run-in-docker.sh two-fer /absolute/path/to/two-fer/solution/folder/ /absolute/path/to/output/directory/
 
-set -e # Make script exit when a command fail.
-set -u # Exit on usage of undeclared variable.
-# set -x # Trace what gets executed.
-set -o pipefail # Catch failures in pipes.
+set -euo pipefail
 
 # If any required arguments is missing, print the usage and exit
 if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
