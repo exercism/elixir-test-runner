@@ -2,7 +2,7 @@ FROM hexpm/elixir:1.13.0-erlang-24.1.7-ubuntu-focal-20210325
 
 # Install SSL ca certificates
 RUN apt-get update && \
-  apt-get install bash jo -y
+  apt-get install bash jo jq -y
 
 # Create appuser
 RUN useradd -ms /bin/bash appuser

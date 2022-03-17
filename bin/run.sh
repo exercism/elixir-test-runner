@@ -20,6 +20,11 @@ base_dir=$(pwd)
 solution_dir=$(realpath $2)
 output_dir=$(realpath $3)
 
+# Copy solution to /tmp
+tmp_sol=$(mktemp -d /tmp/solution_XXXXXXXXXX)
+cp -r ${solution_dir}/* ${tmp_sol}
+solution_dir=${tmp_sol}
+
 # Find the exercise test files
 find "${solution_dir}/test" -type f -name '*.exs' | while read file; do
   # Skip the test_helper
@@ -28,12 +33,10 @@ find "${solution_dir}/test" -type f -name '*.exs' | while read file; do
   fi
 
   printf "parsing %q for metadata\n" "${file}"
-  ./bin/exercism_test_helper --parse-meta "${file}:${output_dir}/metadata.json"
+  ./bin/exercism_test_helper --parse-meta "${file}:${solution_dir}/metadata.json"
 
   printf "transforming %q\n" "${file}"
-  cp "${file}" "${file}.bkp"
-  ./bin/exercism_test_helper --transform "${file}:${file}.altered"
-  cp "${file}.altered" "${file}"
+  ./bin/exercism_test_helper --transform "${file}:${file}"
 done
 
 # Change directory to the solution folder
@@ -44,14 +47,14 @@ compile_step=$(MIX_ENV=test mix compile)
 
 # On compilation error, create results.json with compile error, halt script with error
 if [ $? -ne 0 ]; then
-  jo version=2 status=error message="${compile_step}" tests="[]" > "${output_dir}/results.json"
+  jo version=3 status=error message="${compile_step}" tests="[]" > "${output_dir}/results.json"
   printf "Compilation contained error, see ${output_dir}/results.json\n"
   exit 0
 fi
 
 # Run submission test
 export JSON_PRINT_FILE=1
-export JSON_REPORT_DIR="$output_dir"
+export JSON_REPORT_DIR="${solution_dir}"
 
 elixir \
   -pa ${base_dir}/exercism_test_helper/_build/test/lib/exercism_test_helper/ebin \
@@ -61,23 +64,17 @@ elixir \
   --no-deps-check \
   --exclude slow \
   --formatter JSONFormatter \
-  > "${output_dir}/output" 2> "${output_dir}/error_log"
+  > "${solution_dir}/output" 2> "${solution_dir}/error_log"
 
 cd $base_dir
 
 # Convert the output log to json
-./bin/exercism_test_helper --log-to-json "${output_dir}/output:${output_dir}/output.json"
+./bin/exercism_test_helper --log-to-json "${solution_dir}/output:${solution_dir}/output.json"
 
 # Combine the results and output log json
-./bin/exercism_test_helper --combine "${output_dir}/results.json:${output_dir}/metadata.json:${output_dir}/output.json"
+./bin/exercism_test_helper --combine "${solution_dir}/results.json:${solution_dir}/metadata.json:${solution_dir}/output.json"
 
-# Restore test files
-find "${solution_dir}/test" -type f -name '*.exs' | while read file; do
-  # Skip the test_helper
-  if [[ $(basename "$file") == 'test_helper.exs' ]]; then
-    continue
-  fi
-
-  printf "restoring %q\n" "${file}"
-  cp "${file}.bkp" "${file}"
-done
+# Copy result to output directory if required
+if [[ $solution_dir != $output_dir ]]; then
+  cp "${solution_dir}/results.json" "${output_dir}/results.json"
+fi
