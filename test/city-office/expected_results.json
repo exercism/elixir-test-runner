@@ -1,0 +1,182 @@
+{
+  "message": null,
+  "status": "pass",
+  "tests": [
+    {
+      "message": null,
+      "name": "test the Form module has documentation",
+      "output": "",
+      "status": "pass",
+      "task_id": 1,
+      "test_code": "expected_moduledoc =\n  \"A collection of loosely related functions helpful for filling out various forms at the city office.\\n\"\n\nassert_moduledoc(expected_moduledoc)"
+    },
+    {
+      "message": null,
+      "name": "test blanks/1 returns a string with Xs of a given length",
+      "output": "",
+      "status": "pass",
+      "task_id": 2,
+      "test_code": "assert Form.blanks(5) == \"XXXXX\""
+    },
+    {
+      "message": null,
+      "name": "test blanks/1 returns an empty string when given length is 0",
+      "output": "",
+      "status": "pass",
+      "task_id": 2,
+      "test_code": "assert Form.blanks(0) == \"\""
+    },
+    {
+      "message": null,
+      "name": "test blanks/1 has documentation",
+      "output": "",
+      "status": "pass",
+      "task_id": 2,
+      "test_code": "expected_doc =\n  \"Generates a string of a given length.\\n\\nThis string can be used to fill out a form field that is supposed to have no value.\\nSuch fields cannot be left empty because a malicious third party could fill them out with false data.\\n\"\n\nassert_doc({:blanks, 1}, expected_doc)"
+    },
+    {
+      "message": null,
+      "name": "test blanks/1 has a correct spec",
+      "output": "",
+      "status": "pass",
+      "task_id": 2,
+      "test_code": "assert_spec({:blanks, 1}, [\"n :: non_neg_integer()\", \"non_neg_integer()\"], \"String.t()\")"
+    },
+    {
+      "message": null,
+      "name": "test letters/1 returns a list of upcase letters",
+      "output": "",
+      "status": "pass",
+      "task_id": 3,
+      "test_code": "assert Form.letters(\"Sao Paulo\") == [\"S\", \"A\", \"O\", \" \", \"P\", \"A\", \"U\", \"L\", \"O\"]"
+    },
+    {
+      "message": null,
+      "name": "test letters/1 returns an empty list when given an empty string",
+      "output": "",
+      "status": "pass",
+      "task_id": 3,
+      "test_code": "assert Form.letters(\"\") == []"
+    },
+    {
+      "message": null,
+      "name": "test letters/1 has documentation",
+      "output": "",
+      "status": "pass",
+      "task_id": 3,
+      "test_code": "expected_doc =\n  \"Splits the string into a list of uppercase letters.\\n\\nThis is needed for form fields that don't offer a single input for the whole string,\\nbut instead require splitting the string into a predefined number of single-letter inputs.\\n\"\n\nassert_doc({:letters, 1}, expected_doc)"
+    },
+    {
+      "message": null,
+      "name": "test letters/1 has a typespec",
+      "output": "",
+      "status": "pass",
+      "task_id": 3,
+      "test_code": "assert_spec({:letters, 1}, [\"word :: String.t()\", \"String.t()\"], \"[String.t()]\")"
+    },
+    {
+      "message": null,
+      "name": "test check_length/2 returns :ok is value is below max length",
+      "output": "",
+      "status": "pass",
+      "task_id": 4,
+      "test_code": "assert Form.check_length(\"Ruiz\", 6) == :ok"
+    },
+    {
+      "message": null,
+      "name": "test check_length/2 returns :ok is value is of exactly max length",
+      "output": "",
+      "status": "pass",
+      "task_id": 4,
+      "test_code": "assert Form.check_length(\"Martinez-Cooper\", 15) == :ok"
+    },
+    {
+      "message": null,
+      "name": "test check_length/2 returns an error tuple with the difference between max length and actual length",
+      "output": "",
+      "status": "pass",
+      "task_id": 4,
+      "test_code": "assert Form.check_length(\"Martinez-Campbell\", 10) == {:error, 7}"
+    },
+    {
+      "message": null,
+      "name": "test check_length/2 has documentation",
+      "output": "",
+      "status": "pass",
+      "task_id": 4,
+      "test_code": "expected_doc =\n  \"Checks if the value has no more than the maximum allowed number of letters.\\n\\nThis is needed to check that the values of fields do not exceed the maximum allowed length.\\nIt also tells you by how much the value exceeds the maximum.\\n\"\n\nassert_doc({:check_length, 2}, expected_doc)"
+    },
+    {
+      "message": null,
+      "name": "test check_length/2 has a typespec",
+      "output": "",
+      "status": "pass",
+      "task_id": 4,
+      "test_code": "assert_spec(\n  {:check_length, 2},\n  [\"word :: String.t(), length :: non_neg_integer()\", \"String.t(), non_neg_integer()\"],\n  \":ok | {:error, pos_integer()}\"\n)"
+    },
+    {
+      "message": null,
+      "output": "",
+      "status": "pass",
+      "task_id": null,
+      "test_code": "defmodule CheckLengthOnly do\n  use ExUnit.Case\n  doctest Form, only: [check_length: 2], import: true\nend\n\noutput = capture_io(fn -> ExUnit.run() end)\nassert output =~ \"2 doctests, 0 failures\"\nassert_doc({:check_length, 2}, \"\\n    :ok\")\nassert_doc({:check_length, 2}, ~r/\\n    {:error, \\d+}/)"
+    },
+    {
+      "message": null,
+      "name": "test custom types in the Form module has a custom 'address_map' type",
+      "output": "",
+      "status": "pass",
+      "task_id": 5,
+      "test_code": "expected_type_definition = \"%{street: String.t(), postal_code: String.t(), city: String.t()}\"\nassert_type({Form, :address_map}, expected_type_definition)"
+    },
+    {
+      "message": null,
+      "name": "test custom types in the Form module has a custom 'address_tuple' type with named arguments",
+      "output": "",
+      "status": "pass",
+      "task_id": 5,
+      "test_code": "expected_type_definition = \"{street :: String.t(), postal_code :: String.t(), city :: String.t()}\"\nassert_type({Form, :address_tuple}, expected_type_definition)"
+    },
+    {
+      "message": null,
+      "name": "test custom types in the Form module has a custom 'address' type that is a union of 'address_map' and 'address_tuple'",
+      "output": "",
+      "status": "pass",
+      "task_id": 5,
+      "test_code": "expected_type_definition = \"address_map() | address_tuple()\"\nassert_type({Form, :address}, expected_type_definition)"
+    },
+    {
+      "message": null,
+      "name": "test format_address/1 accepts a map",
+      "output": "",
+      "status": "pass",
+      "task_id": 6,
+      "test_code": "input = %{street: \"Wiejska 4/6/8\", postal_code: \"00-902\", city: \"Warsaw\"}\nresult = \"WIEJSKA 4/6/8\\n00-902 WARSAW\\n\"\nassert Form.format_address(input) == result"
+    },
+    {
+      "message": null,
+      "name": "test format_address/1 accepts a 3 string tuple",
+      "output": "",
+      "status": "pass",
+      "task_id": 6,
+      "test_code": "result = \"PLATZ DER REPUBLIK 1\\n11011 BERLIN\\n\"\nassert Form.format_address({\"Platz der Republik 1\", \"11011\", \"Berlin\"}) == result"
+    },
+    {
+      "message": null,
+      "name": "test format_address/1 has documentation",
+      "output": "",
+      "status": "pass",
+      "task_id": 6,
+      "test_code": "expected_doc = \"Formats the address as an uppercase multiline string.\\n\"\nassert_doc({:format_address, 1}, expected_doc)"
+    },
+    {
+      "message": null,
+      "name": "test format_address/1 has a typespec",
+      "output": "",
+      "status": "pass",
+      "task_id": 6,
+      "test_code": "assert_spec({:format_address, 1}, [\"address :: address()\", \"address()\"], \"String.t()\")"
+    }
+  ],
+  "version": 3
+}
