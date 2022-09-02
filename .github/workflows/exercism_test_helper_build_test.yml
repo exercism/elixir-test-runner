@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: elixir:1.13-slim
+      image: elixir:1.14.0-erlang-25.0.4-debian-bullseye-20220801
 
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
