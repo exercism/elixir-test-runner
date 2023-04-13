@@ -14,7 +14,7 @@ jobs:
       image: hexpm/elixir:1.14.0-erlang-25.0.4-debian-bullseye-20220801
 
     steps:
-      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+      - uses: actions/checkout@83b7061638ee4956cf7545a6f7efe594e5ad0247
       - name: Install Dependencies
         run: |
           cd exercism_test_helper
