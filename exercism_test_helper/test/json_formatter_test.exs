@@ -121,7 +121,7 @@ defmodule JSONFormatterTest do
 
   defp run_and_capture_output(opts \\ []) do
     ExUnit.configure(Keyword.merge(opts, formatters: [JSONFormatter]))
-    ExUnit.Server.modules_loaded()
+    ExUnit.Server.modules_loaded(false)
     ExUnit.run()
     File.read!(JSONFormatter.get_report_file_path()) <> "\n"
   end
