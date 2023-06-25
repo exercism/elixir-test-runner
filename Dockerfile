@@ -1,8 +1,8 @@
-FROM hexpm/elixir:1.14.0-erlang-25.0.4-debian-bullseye-20220801
+FROM hexpm/elixir:1.15.0-erlang-26.0-ubuntu-jammy-20230126
 
 # Install SSL ca certificates
 RUN apt-get update && \
-  apt-get install bash jo jq -y
+  apt-get install bash jo jq ca-certificates -y
 
 # Create appuser
 RUN useradd -ms /bin/bash appuser
