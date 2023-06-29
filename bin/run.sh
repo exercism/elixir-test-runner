@@ -60,6 +60,7 @@ elixir \
   -pa ${base_dir}/exercism_test_helper/_build/test/lib/exercism_test_helper/ebin \
   -pa ${base_dir}/exercism_test_helper/_build/test/lib/jason/ebin \
   -S mix test \
+  --no-prune-code-paths \
   --seed 0 \
   --no-deps-check \
   --exclude slow \
