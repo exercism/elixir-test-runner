@@ -21,6 +21,7 @@ jobs:
 
       - name: Update submodules
         run: |
+          git config --global --add safe.directory /__w/elixir-test-runner/elixir-test-runner
           git submodule update --init --recursive --remote
 
       - name: Install / Build Dependencies
