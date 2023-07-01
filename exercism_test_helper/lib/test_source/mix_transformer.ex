@@ -1,4 +1,10 @@
 defmodule TestSource.MixTransformer do
+  @moduledoc """
+  This module transforms the provided test's mixfile to disable
+  code path pruning. If not disabled, the JSONFormatter module
+  will fail to be injected into the test and not produce
+  results.
+  """
   def transform_mix(file_contents) do
     file_contents
     |> Code.string_to_quoted!()
