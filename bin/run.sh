@@ -25,6 +25,9 @@ tmp_sol=$(mktemp -d /tmp/solution_XXXXXXXXXX)
 cp -r ${solution_dir}/* ${tmp_sol}
 solution_dir=${tmp_sol}
 
+printf "transforming %q\n" "${solution_dir}/mix.exs"
+./bin/exercism_test_helper --transform-mix "${solution_dir}/mix.exs:${solution_dir}/mix.exs"
+
 # Find the exercise test files
 find "${solution_dir}/test" -type f -name '*.exs' | while read file; do
   # Skip the test_helper
