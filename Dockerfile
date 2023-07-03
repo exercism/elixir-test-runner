@@ -1,4 +1,4 @@
-FROM hexpm/elixir:1.15.2-erlang-26.0.2-debian-bookworm-20230612
+FROM hexpm/elixir:1.14.0-erlang-25.0.4-debian-bullseye-20220801
 
 # Install SSL ca certificates
 RUN apt-get update && \
