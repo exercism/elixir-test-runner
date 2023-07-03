@@ -164,7 +164,7 @@ defmodule TestSource.TransformerTest do
     funs = ExUnit.Server.__info__(:functions)
 
     if Keyword.has_key?(funs, :modules_loaded) do
-      ExUnit.Server.modules_loaded(false)
+      ExUnit.Server.modules_loaded()
     end
 
     ExUnit.run()

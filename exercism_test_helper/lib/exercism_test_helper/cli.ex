@@ -3,7 +3,6 @@ defmodule ExercismTestHelper.CLI do
 
   alias ExercismTestHelper.CLI.Command.{
     TestTransform,
-    MixTransform,
     OutputLogToJSON,
     CombineJSON,
     ParseMeta
@@ -13,7 +12,6 @@ defmodule ExercismTestHelper.CLI do
   Usage:
   > exercism_test_helper [--parse-meta <test filename>:<output json filename>]
   > exercism_test_helper [--transform <test filename>:<transformed test filename>]
-  > exercism_test_helper [--transform-mix <mix filename>:<transformed mix filename>]
   > exercism_test_helper [--log-to-json <output filename>:<output json filename>]
   > exercism_test_helper [--combine <result json>:<metadata json>:<output json>]
   """
@@ -25,7 +23,6 @@ defmodule ExercismTestHelper.CLI do
       OptionParser.parse(args,
         strict: [
           transform: :string,
-          transform_mix: :string,
           log_to_json: :string,
           combine: :string,
           parse_meta: :string
@@ -37,11 +34,6 @@ defmodule ExercismTestHelper.CLI do
         argv[:transform]
         |> String.split(":")
         |> TestTransform.run()
-
-      argv[:transform_mix] ->
-        argv[:transform_mix]
-        |> String.split(":")
-        |> MixTransform.run()
 
       argv[:log_to_json] ->
         argv[:log_to_json]
