@@ -46,7 +46,7 @@ done
 cd $solution_dir
 
 # Compile solution
-compile_step=$(MIX_ENV=test mix compile)
+compile_step=$(MIX_ENV=test mix compile 2>&1)
 
 # On compilation error, create results.json with compile error, halt script with error
 if [ $? -ne 0 ]; then
