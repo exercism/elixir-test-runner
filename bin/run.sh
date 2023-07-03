@@ -25,6 +25,9 @@ tmp_sol=$(mktemp -d /tmp/solution_XXXXXXXXXX)
 cp -r ${solution_dir}/* ${tmp_sol}
 solution_dir=${tmp_sol}
 
+printf "transforming %q\n" "${solution_dir}/mix.exs"
+./bin/exercism_test_helper --transform-mix "${solution_dir}/mix.exs:${solution_dir}/mix.exs"
+
 # Find the exercise test files
 find "${solution_dir}/test" -type f -name '*.exs' | while read file; do
   # Skip the test_helper
@@ -43,7 +46,7 @@ done
 cd $solution_dir
 
 # Compile solution
-compile_step=$(MIX_ENV=test mix compile)
+compile_step=$(MIX_ENV=test mix compile 2>&1)
 
 # On compilation error, create results.json with compile error, halt script with error
 if [ $? -ne 0 ]; then
