@@ -5,7 +5,7 @@ defmodule ExercismTestHelper.MixProject do
     [
       app: :exercism_test_helper,
       version: "0.1.2",
-      elixir: "~> 1.15",
+      elixir: "~> 1.16",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       escript: escript()

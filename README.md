@@ -6,7 +6,7 @@ Exercism Automated Test Runner for Elixir Exercises
 
 ## Environment
 
-The test runner currently targets exercises supporting Elixir >= 1.6 and Erlang/OTP >= 20, but is running on Elixir 1.15.2 on hexpm's `elixir:1.15.2-erlang-26.0.2-debian-bookworm-20230612` image
+The test runner currently targets exercises supporting Elixir >= 1.11 and Erlang/OTP >= 23, but is running on Elixir 1.16.0 on hexpm's `elixir:1.16.0-erlang-26.2.1-debian-bookworm-20231009` image
 
 The `Dockerfile` also has added `bash`, `jo` and `jq` to the image.
 
