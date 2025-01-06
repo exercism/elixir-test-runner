@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     container:
-      image: hexpm/elixir:1.18.1-erlang-27.2-debian-bookworm-20241223
+      image: hexpm/elixir:1.17.0-erlang-27.0-debian-bookworm-20240612
 
     steps:
       - name: Install git
