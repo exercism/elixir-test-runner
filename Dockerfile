@@ -23,6 +23,9 @@ RUN mix local.rebar --force && \
 RUN MIX_ENV=prod mix escript.build && \
   mv exercism_test_helper /opt/test-runner/bin
 
+# clear temp files created by root to avoid permission issues
+RUN rm -rf /tmp/*
+
 USER appuser
 
 WORKDIR /opt/test-runner
