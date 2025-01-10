@@ -13,15 +13,15 @@ COPY . .
 
 # Compile the formatter
 WORKDIR /opt/test-runner/exercism_test_helper
-RUN mix local.rebar --force
-RUN mix local.hex --force
-RUN mix deps.get
-RUN MIX_ENV=test mix compile
-RUN mix test --no-compile
+RUN mix local.rebar --force && \
+  mix local.hex --force && \
+  mix deps.get && \
+  MIX_ENV=test mix compile && \
+  mix test --no-compile
 
 # Build the escript
-RUN MIX_ENV=prod mix escript.build
-RUN mv exercism_test_helper /opt/test-runner/bin
+RUN MIX_ENV=prod mix escript.build && \
+  mv exercism_test_helper /opt/test-runner/bin
 
 USER appuser
 
