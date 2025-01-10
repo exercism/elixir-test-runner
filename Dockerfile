@@ -1,8 +1,4 @@
-FROM hexpm/elixir:1.18.1-erlang-27.2-debian-bookworm-20241223
-
-# Install SSL ca certificates
-RUN apt-get update && \
-  apt-get install bash jo jq -y
+FROM hexpm/elixir:1.18.1-erlang-27.2-debian-bookworm-20241223 as builder
 
 # Create appuser
 RUN useradd -ms /bin/bash appuser
@@ -23,8 +19,13 @@ RUN mix local.rebar --force && \
 RUN MIX_ENV=prod mix escript.build && \
   mv exercism_test_helper /opt/test-runner/bin
 
-# clear temp files created by root to avoid permission issues
-RUN rm -rf /tmp/*
+FROM hexpm/elixir:1.18.1-erlang-27.2-debian-bookworm-20241223 as runner
+COPY --from=builder /etc/passwd /etc/passwd
+COPY --from=builder /opt/test-runner /opt/test-runner
+
+# Install SSL ca certificates
+RUN apt-get update && \
+  apt-get install bash jo jq -y
 
 USER appuser
 
