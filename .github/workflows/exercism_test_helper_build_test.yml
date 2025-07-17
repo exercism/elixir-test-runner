@@ -8,13 +8,13 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     container:
       image: hexpm/elixir:1.18.1-erlang-27.2-debian-bookworm-20241223
 
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/checkout@09d2acae674a48949e3602304ab46fd20ae0c42f
       - name: Install Dependencies
         run: |
           cd exercism_test_helper
