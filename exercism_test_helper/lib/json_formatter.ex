@@ -235,12 +235,7 @@ defmodule JSONFormatter do
 
   # Colorize Utility Functions -- from ExUnit.CLIFormatter, but can't import d/t being private in source
 
-  defp colorize(escape, msg, config) when is_doc(msg) do
-    msg = Inspect.Algebra.format(msg, 2)
-    colorize(escape, msg, config)
-  end
-
-  defp colorize(escape, string, %{colors: colors}) do
+  defp colorize(escape, string, %{colors: colors}) when is_binary(string) do
     if colors[:enabled] do
       [escape, string, :reset]
       |> IO.ANSI.format_fragment(true)
@@ -248,6 +243,15 @@ defmodule JSONFormatter do
     else
       string
     end
+  end
+
+  defp colorize(escape, msg, config) when is_doc(msg) do
+    msg =
+      msg
+      |> Inspect.Algebra.format(2)
+      |> IO.iodata_to_binary()
+
+    colorize(escape, msg, config)
   end
 
   @doc """
