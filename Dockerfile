@@ -1,4 +1,4 @@
-FROM hexpm/elixir:1.18.1-erlang-27.2-debian-bookworm-20241223 as builder
+FROM hexpm/elixir:1.19.4-erlang-28.1-debian-bookworm-20251117 as builder
 
 # Create appuser
 RUN useradd -ms /bin/bash appuser
@@ -19,7 +19,7 @@ RUN mix local.rebar --force && \
 RUN MIX_ENV=prod mix escript.build && \
   mv exercism_test_helper /opt/test-runner/bin
 
-FROM hexpm/elixir:1.18.1-erlang-27.2-debian-bookworm-20241223 as runner
+FROM hexpm/elixir:1.19.4-erlang-28.1-debian-bookworm-20251117 as runner
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /opt/test-runner /opt/test-runner
 

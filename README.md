@@ -6,7 +6,7 @@ Exercism Automated Test Runner for Elixir Exercises
 
 ## Environment
 
-The test runner currently targets exercises supporting Elixir >= 1.14 and Erlang/OTP >= 25, but is running on Elixir 1.18.0 on hexpm's `elixir:1.18.1-erlang-27.2-debian-bookworm-20241223` image.
+The test runner currently targets exercises supporting Elixir >= 1.15 and Erlang/OTP >= 26, but is running on Elixir 1.19.4 on hexpm's `elixir:1.19.4-erlang-28.1-debian-bookworm-20251117` image.
 
 The `Dockerfile` also has added `bash`, `jo` and `jq` to the image.
 
@@ -18,6 +18,10 @@ The `Dockerfile` also has added `bash`, `jo` and `jq` to the image.
 > that the repository builds as a whole, and help guard against unintentional, unrelated changes.
 
 ---
+
+## Smoke tests
+
+There is a gotcha in the smoke test setup: for the tests to work as expected locally, your **global** Elixir and Erlang versions must also be set to the same values as locally via `.tool-versions`.
 
 ## Contributing Guide
 
