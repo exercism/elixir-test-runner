@@ -19,6 +19,10 @@ The `Dockerfile` also has added `bash`, `jo` and `jq` to the image.
 
 ---
 
+## Smoke tests
+
+There is a gotcha in the smoke test setup: for the tests to work as expected locally, your **global** Elixir and Erlang versions must also be set to the same values as locally via `.tool-versions`.
+
 ## Contributing Guide
 
 For an in-depth discussion of how exercism language tracks and exercises work, please see [CONTRIBUTING.md](https://github.com/exercism/elixir-test-runner/blob/master/CONTRIBUTING.md)
