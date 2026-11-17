@@ -265,7 +265,7 @@ defmodule JSONFormatter do
     prepend = System.get_env("JSON_PREPEND_PROJECT_NAME")
 
     report_file = System.get_env("JSON_REPORT_FILE", "results.json")
-    report_dir = System.get_env("JSON_REPORT_DIR", Mix.Project.app_path())
+    report_dir = System.get_env("JSON_REPORT_DIR") || Mix.Project.app_path()
     prefix = if prepend, do: "#{Mix.Project.config()[:app]}-", else: ""
 
     Path.join(report_dir, prefix <> report_file)

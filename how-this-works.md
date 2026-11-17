@@ -13,14 +13,20 @@ These are outlined in the interface that the test-runner satisfies, but briefly 
 
 - A `Dockerfile` which builds an image and provides an entrypoint to the test runner
 - An elixir module which, when compiled, can be injected as a dependency into a solution submitted as a standard mix-style project
+- An elixir module, `ExercismTestHelper.Runner`, which compiles a solution and runs its tests in a single BEAM
 - A small elixir-based application compiled into an escript which performs a small transformation of the supplied test file
-- A bash script which coordinates the activities of the escript, test-suite run, and result output.
+- Bash scripts which start the runner, and fall back to running the tests with Mix when the runner can't handle a solution
 
 ## Dockerfile
 
-Described in bread strokes, the docker image is build on an alpine linux variant with elixir pre-built.
+The docker image is built on hexpm's Debian-based Elixir image.
 
-The build script gets the mix-project dependencies, compiles the Formatter and escript, then provides an entry point to the bash script running as a limited user.
+The build gets the mix-project dependencies, compiles the helper application and the escript, then provides an entry point to the bash script running as a limited user.
+
+The build also prepares two things that every run uses:
+
+- `bin/build-consolidated.sh` consolidates Elixir's own protocols into `/opt/test-runner/consolidated`, as `mix compile` would for an exercise.
+- `bin/build-preload.sh` runs the hello-world fixture and records the modules it loads into `/opt/test-runner/preload.bin` (see "Preloading modules" below).
 
 ## Elixir module - JSONFormatter
 
@@ -78,11 +84,40 @@ The outcome is that when the test suite is run, since the default CLIFormatter o
 
 Awesome! Raise an issue, let's discuss!
 
+## Running the tests in one BEAM
+
+> `exercism_test_helper/lib/exercism_test_helper/runner.ex`
+
+Most of a short test run goes on starting BEAMs and loading Elixir. Running the tests with Mix and the escript starts seven BEAMs per run. `ExercismTestHelper.Runner` does the same work in one BEAM, without Mix:
+
+1. It checks that the project has the shape used by the track's exercises: a standard `mix.exs` with no dependencies, no `config/` directory, one test file plus `test/test_helper.exs`, and no use of `Mix` in the code.
+1. In a second process, it parses the test metadata and transforms the test file. Meanwhile it compiles `lib/` with `Kernel.ParallelCompiler`.
+1. It writes the `.app` file and starts the application, as `mix compile` would.
+1. It consolidates only the protocols defined or implemented by the solution. Elixir's own protocols were consolidated when the image was built. Consolidating every protocol, as `mix compile` does, takes a large part of a run.
+1. It runs ExUnit with the options set by `mix test --seed 0 --exclude slow --formatter JSONFormatter`.
+1. It builds `results.json` with the same code as the escript's `--log-to-json` and `--combine` commands.
+
+### Preloading modules
+
+> `exercism_test_helper/lib/exercism_test_helper/preload.ex`
+
+A run loads over 200 modules from disk. `ExercismTestHelper.Preload` starts as soon as the VM boots and loads them in a background process, in the order the runner needs them. The runner meanwhile gets on with its first steps on the other CPU. The list of modules is recorded when the image is built.
+
+### Falling back to Mix
+
+The runner exits with code 100 if the solution isn't a standard exercise project, or if it crashes. `bin/run.sh` then runs `bin/run-with-mix.sh`, which runs the tests with Mix and the escript as described below.
+
+The runner exits with code 101 if the solution fails to compile. `bin/run.sh` then runs `mix compile`, so that the student sees Mix's own error message.
+
 ## Shell script entry point
 
 > `bin/run.sh`
 
-This serves as the test-runner's entry point once the image is built. It follows this basic sequence:
+This serves as the test-runner's entry point once the image is built. It copies the solution to a temporary directory and starts `ExercismTestHelper.Runner` with `erl`. Calling `erl` directly with the arguments built by the `elixir` script saves the time spent in that script.
+
+> `bin/run-with-mix.sh`
+
+This runs the tests with Mix, for the solutions the runner doesn't handle. It follows this basic sequence:
 
 1. Parse metadata from the test suite
 1. Transform a test suite to make suitable for output capture
