@@ -20,19 +20,19 @@
 
 # Save pwd
 base_dir=$(pwd)
-solution_dir=$(realpath $2)
-output_dir=$(realpath $3)
+solution_dir=$(realpath "$2")
+output_dir=$(realpath "$3")
 
 # Copy solution to /tmp
 tmp_sol=$(mktemp -d /tmp/solution_XXXXXXXXXX)
-cp -r ${solution_dir}/* ${tmp_sol}
-solution_dir=${tmp_sol}
+cp -r "${solution_dir}"/* "${tmp_sol}"
+solution_dir="${tmp_sol}"
 
 printf "transforming %q\n" "${solution_dir}/mix.exs"
 ./bin/exercism_test_helper --transform-mix "${solution_dir}/mix.exs:${solution_dir}/mix.exs"
 
 # Find the exercise test files
-find "${solution_dir}/test" -type f -name '*.exs' | while read file; do
+find "${solution_dir}/test" -type f -name '*.exs' | while read -r file; do
   # Skip the test_helper
   if [[ $(basename "$file") == 'test_helper.exs' ]]; then
     continue
@@ -46,7 +46,7 @@ find "${solution_dir}/test" -type f -name '*.exs' | while read file; do
 done
 
 # Change directory to the solution folder
-cd $solution_dir
+cd "${solution_dir}"
 
 # Compile solution
 compile_step=$(MIX_ENV=test mix compile 2>&1)
@@ -54,7 +54,7 @@ compile_step=$(MIX_ENV=test mix compile 2>&1)
 # On compilation error, create results.json with compile error, halt script with error
 if [ $? -ne 0 ]; then
   jo version=3 status=error message="${compile_step}" tests="[]" > "${output_dir}/results.json"
-  printf "Compilation contained error, see ${output_dir}/results.json\n"
+  printf "Compilation contained error, see %s/results.json\n" "${output_dir}"
   exit 0
 fi
 
@@ -63,8 +63,8 @@ export JSON_PRINT_FILE=1
 export JSON_REPORT_DIR="${solution_dir}"
 
 elixir \
-  -pa ${base_dir}/exercism_test_helper/_build/test/lib/exercism_test_helper/ebin \
-  -pa ${base_dir}/exercism_test_helper/_build/test/lib/jason/ebin \
+  -pa "${base_dir}/exercism_test_helper/_build/test/lib/exercism_test_helper/ebin" \
+  -pa "${base_dir}/exercism_test_helper/_build/test/lib/jason/ebin" \
   -S mix test \
   --seed 0 \
   --no-deps-check \
@@ -72,7 +72,7 @@ elixir \
   --formatter JSONFormatter \
   > "${solution_dir}/output" 2> "${solution_dir}/error_log"
 
-cd $base_dir
+cd "${base_dir}"
 
 # Convert the output log to json
 ./bin/exercism_test_helper --log-to-json "${solution_dir}/output:${solution_dir}/output.json"
@@ -81,6 +81,6 @@ cd $base_dir
 ./bin/exercism_test_helper --combine "${solution_dir}/results.json:${solution_dir}/metadata.json:${solution_dir}/output.json"
 
 # Copy result to output directory if required
-if [[ $solution_dir != $output_dir ]]; then
+if [[ "${solution_dir}" != "${output_dir}" ]]; then
   cp "${solution_dir}/results.json" "${output_dir}/results.json"
 fi

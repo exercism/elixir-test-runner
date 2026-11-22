@@ -31,14 +31,14 @@ cd "${tmp_sol}"
 
 # The hexpm Docker images install Elixir here.
 elixir_dir=/usr/local/lib/elixir
-helper_build=${base_dir}/exercism_test_helper/_build/test/lib
+helper_build="${base_dir}/exercism_test_helper/_build/test/lib"
 
 # Start the BEAM with `erl`, with the arguments the `elixir` script would pass.
 # Going through the `elixir` script would cost extra time on every run.
 # The runner's stdout becomes the tests' output, as with `mix test > output`.
-EXERCISM_CONSOLIDATED=${base_dir}/consolidated \
-EXERCISM_PRELOAD=${base_dir}/preload.bin \
-JSON_REPORT_DIR=${tmp_sol} \
+EXERCISM_CONSOLIDATED="${base_dir}/consolidated" \
+EXERCISM_PRELOAD="${base_dir}/preload.bin" \
+JSON_REPORT_DIR="${tmp_sol}" \
   erl -noshell \
   -elixir_root "${elixir_dir}/lib" -pa "${elixir_dir}/lib/elixir/ebin" \
   -pa "${helper_build}/exercism_test_helper/ebin" -pa "${helper_build}/jason/ebin" \
@@ -49,7 +49,7 @@ JSON_REPORT_DIR=${tmp_sol} \
 case $? in
   0)
     # The runner finished. There is no results.json if the test file failed to compile.
-    if [[ -f "${tmp_sol}/results.json" && $tmp_sol != $output_dir ]]; then
+    if [[ -f "${tmp_sol}/results.json" && "${tmp_sol}" != "${output_dir}" ]]; then
       cp "${tmp_sol}/results.json" "${output_dir}/results.json"
     fi
     exit 0
@@ -67,7 +67,7 @@ case $? in
 
     if [ $? -ne 0 ]; then
       jo version=3 status=error message="${compile_step}" tests="[]" > "${output_dir}/results.json"
-      printf "Compilation contained error, see ${output_dir}/results.json\n"
+      printf "Compilation contained error, see %s/results.json\n" "${output_dir}"
       exit 0
     fi
     ;;
