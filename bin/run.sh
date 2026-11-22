@@ -16,9 +16,11 @@
 # ./bin/run.sh two-fer path/to/two-fer/solution/folder path/to/output-directory
 
 # This script compiles the solution and runs its tests in a single BEAM, with
-# ExercismTestHelper.Runner (see how-this-works.md). If the runner can't handle
-# the solution, it exits with a code that tells this script what to do next,
-# and the tests run with Mix as they did before (bin/run-with-mix.sh).
+# ExercismTestHelper.Runner (see how-this-works.md). The runner only handles the
+# project shape used by the track's exercises. For anything else (for example a
+# mix.exs with dependencies, a config/ directory, or code that calls Mix), it
+# exits with code 100, and the tests run with Mix as they did before
+# (bin/run-with-mix.sh). "Falling back to Mix" in how-this-works.md lists every case.
 
 base_dir=$(pwd)
 solution_dir=$(realpath "$2")
@@ -32,6 +34,14 @@ cd "${tmp_sol}"
 # The hexpm Docker images install Elixir here.
 elixir_dir=/usr/local/lib/elixir
 helper_build="${base_dir}/exercism_test_helper/_build/test/lib"
+
+# The runner hands a project with any of these directories to Mix (see
+# ExercismTestHelper.Runner). Checking for them here saves starting a BEAM that
+# would only exit, which costs about 0.5s per run.
+if [[ -e _build || -e deps || -e config || -e src ]]; then
+  cd "${base_dir}"
+  exec "${base_dir}/bin/run-with-mix.sh" "$1" "${solution_dir}" "${output_dir}"
+fi
 
 # Start the BEAM with `erl`, with the arguments the `elixir` script would pass.
 # Going through the `elixir` script would cost extra time on every run.
@@ -73,6 +83,7 @@ case $? in
     ;;
 esac
 
-# Exit code 100 (or a crash) means the runner doesn't support this solution.
+# Exit code 100 (or a crash) means the solution doesn't have the standard
+# exercise shape (see "Falling back to Mix" in how-this-works.md).
 cd "${base_dir}"
 exec "${base_dir}/bin/run-with-mix.sh" "$1" "${solution_dir}" "${output_dir}"
