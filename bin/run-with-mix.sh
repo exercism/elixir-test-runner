@@ -4,8 +4,8 @@
 # Automatically tests exercism's Elixir track solutions against corresponding test files.
 # Takes three arguments and makes sure all the tests are run
 
-# bin/run.sh calls this script when ExercismTestHelper.Runner can't handle a
-# solution. It compiles the solution and runs the tests with Mix.
+# bin/run.sh calls this script in the cases listed under "Falling back to Mix"
+# in how-this-works.md. It compiles the solution and runs the tests with Mix.
 
 # Arguments:
 # $1: exercise slug

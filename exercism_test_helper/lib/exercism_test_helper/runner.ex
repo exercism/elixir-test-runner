@@ -37,8 +37,8 @@ defmodule ExercismTestHelper.Runner do
   @use_mix 100
   @compile_error 101
 
-  # The modules of this helper and of Jason. If a solution defined one of
-  # them, it would clash with the runner, so it goes to Mix instead.
+  # The modules of this helper and of Jason. If a solution defined or used one
+  # of them, it would clash with the runner, so it goes to Mix instead.
   @helper_prefixes [
     "Elixir.ExercismTestHelper",
     "Elixir.Meta.",
@@ -216,13 +216,40 @@ defmodule ExercismTestHelper.Runner do
     end
   end
 
-  # Code that calls Mix, or reads config at compile time, needs a real Mix project.
+  # Mix runs the tests in a real Mix project, and compiles the solution
+  # without this helper and Jason in the code path. The runner doesn't start
+  # Mix, and has the helper and Jason loaded while it compiles. So any code
+  # that refers to Mix, to the helper or to Jason goes to Mix, which keeps the
+  # behaviour Mix gives it. The check walks the parsed code, so the word "Mix"
+  # in a string or a comment doesn't count. If a file doesn't parse, the
+  # compiler will report the error.
   defp check_sources(files) do
-    if Enum.any?(files, &(File.read!(&1) =~ ~r/\bMix\b|compile_env/)) do
-      :use_mix
-    else
-      :ok
+    if Enum.any?(files, &refers_to_mix_or_helper?/1), do: :use_mix, else: :ok
+  end
+
+  defp refers_to_mix_or_helper?(file) do
+    case Code.string_to_quoted(File.read!(file), file: file) do
+      {:ok, ast} ->
+        {_ast, found?} =
+          Macro.prewalk(ast, false, fn
+            {:__aliases__, _, segments} = node, found? ->
+              {node, found? or mix_or_helper_alias?(segments)}
+
+            node, found? ->
+              {node, found?}
+          end)
+
+        found?
+
+      {:error, _} ->
+        false
     end
+  end
+
+  defp mix_or_helper_alias?([:Mix | _]), do: true
+
+  defp mix_or_helper_alias?(segments) do
+    Enum.all?(segments, &is_atom/1) and helper_module?(Module.concat(segments))
   end
 
   defp helper_module?(module) do

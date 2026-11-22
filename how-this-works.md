@@ -90,7 +90,7 @@ Awesome! Raise an issue, let's discuss!
 
 Most of a short test run goes on starting BEAMs and loading Elixir. Running the tests with Mix and the escript starts seven BEAMs per run. `ExercismTestHelper.Runner` does the same work in one BEAM, without Mix:
 
-1. It checks that the project has the shape used by the track's exercises: a standard `mix.exs` with no dependencies, no `config/` directory, one test file plus `test/test_helper.exs`, and no use of `Mix` in the code.
+1. It checks that the project has the shape used by the track's exercises: a standard `mix.exs` with no dependencies, no `config/` directory, one test file plus `test/test_helper.exs`, and no reference in the code to `Mix`, to Jason or to the helper's own modules.
 2. In a second process, it parses the test metadata and transforms the test file. Meanwhile it compiles `lib/` with `Kernel.ParallelCompiler`.
 3. It writes the `.app` file and starts the application, as `mix compile` would.
 4. It consolidates only the protocols defined or implemented by the solution. Elixir's own protocols were consolidated when the image was built. Consolidating every protocol, as `mix compile` does, takes a large part of a run.
@@ -105,7 +105,17 @@ A run loads over 200 modules from disk. `ExercismTestHelper.Preload` starts as s
 
 ### Falling back to Mix
 
-The runner exits with code 100 if the solution isn't a standard exercise project, or if it crashes. `bin/run.sh` then runs `bin/run-with-mix.sh`, which runs the tests with Mix and the escript as described below.
+The runner only handles the project shape used by every exercise on the track today. It exits with code 100 in these cases:
+
+- `mix.exs` has anything beyond the standard `project/0`, `application/0` and `deps/0`, or `deps/0` lists a dependency.
+- The project has a `config/`, `src/`, `_build/` or `deps/` directory.
+- `lib/` has no `.ex` files.
+- `test/` has anything other than one `*_test.exs` file and `test_helper.exs`.
+- The code refers to `Mix`, to Jason or to one of the helper's modules (the runner doesn't start Mix, and Mix compiles the solution without the helper and Jason).
+- The solution defines a module with the same name as one of the helper's modules or Jason's.
+- The runner crashes.
+
+`bin/run.sh` then runs `bin/run-with-mix.sh`, which runs the tests with Mix and the escript as described below. None of the track's example solutions take this path. It exists so that an unusual submission, or a future exercise with dependencies or config, will still be tested correctly.
 
 The runner exits with code 101 if the solution fails to compile. `bin/run.sh` then runs `mix compile`, so that the student sees Mix's own error message.
 
@@ -117,7 +127,7 @@ This serves as the test-runner's entry point once the image is built. It copies 
 
 > `bin/run-with-mix.sh`
 
-This runs the tests with Mix, for the solutions the runner doesn't handle. It follows this basic sequence:
+This runs the tests with Mix, in the cases listed in "Falling back to Mix" above. It follows this basic sequence:
 
 1. Parse metadata from the test suite
 2. Transform a test suite to make suitable for output capture
