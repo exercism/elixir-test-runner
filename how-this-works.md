@@ -91,11 +91,11 @@ Awesome! Raise an issue, let's discuss!
 Most of a short test run goes on starting BEAMs and loading Elixir. Running the tests with Mix and the escript starts seven BEAMs per run. `ExercismTestHelper.Runner` does the same work in one BEAM, without Mix:
 
 1. It checks that the project has the shape used by the track's exercises: a standard `mix.exs` with no dependencies, no `config/` directory, one test file plus `test/test_helper.exs`, and no use of `Mix` in the code.
-1. In a second process, it parses the test metadata and transforms the test file. Meanwhile it compiles `lib/` with `Kernel.ParallelCompiler`.
-1. It writes the `.app` file and starts the application, as `mix compile` would.
-1. It consolidates only the protocols defined or implemented by the solution. Elixir's own protocols were consolidated when the image was built. Consolidating every protocol, as `mix compile` does, takes a large part of a run.
-1. It runs ExUnit with the options set by `mix test --seed 0 --exclude slow --formatter JSONFormatter`.
-1. It builds `results.json` with the same code as the escript's `--log-to-json` and `--combine` commands.
+2. In a second process, it parses the test metadata and transforms the test file. Meanwhile it compiles `lib/` with `Kernel.ParallelCompiler`.
+3. It writes the `.app` file and starts the application, as `mix compile` would.
+4. It consolidates only the protocols defined or implemented by the solution. Elixir's own protocols were consolidated when the image was built. Consolidating every protocol, as `mix compile` does, takes a large part of a run.
+5. It runs ExUnit with the options set by `mix test --seed 0 --exclude slow --formatter JSONFormatter`.
+6. It builds `results.json` with the same code as the escript's `--log-to-json` and `--combine` commands.
 
 ### Preloading modules
 
@@ -120,7 +120,7 @@ This serves as the test-runner's entry point once the image is built. It copies 
 This runs the tests with Mix, for the solutions the runner doesn't handle. It follows this basic sequence:
 
 1. Parse metadata from the test suite
-1. Transform a test suite to make suitable for output capture
-1. Compile and run the test suite, capturing stdout and stderr to file
-1. Transform the stdout log into a JSON suitable for combining with the results
-1. Combining the output, metadata, and results JSON files into a final results.json file.
+2. Transform a test suite to make suitable for output capture
+3. Compile and run the test suite, capturing stdout and stderr to file
+4. Transform the stdout log into a JSON suitable for combining with the results
+5. Combining the output, metadata, and results JSON files into a final results.json file.
