@@ -27,6 +27,16 @@ COPY --from=builder /opt/test-runner /opt/test-runner
 RUN apt-get update && \
   apt-get install bash jo jq -y
 
+WORKDIR /opt/test-runner
+
+# Consolidate Elixir's protocols once, so that each run only has to
+# consolidate the solution's own protocols
+RUN bin/build-consolidated.sh /opt/test-runner/consolidated
+
+# Record the modules that every run loads, so that each run can load them in
+# the background. This runs the hello-world fixture, so clear /tmp afterwards.
+RUN bin/build-preload.sh /opt/test-runner/preload.bin && rm -rf /tmp/*
+
 USER appuser
 
 WORKDIR /opt/test-runner
